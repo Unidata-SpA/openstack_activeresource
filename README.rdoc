@@ -1,0 +1,423 @@
+= openstack_activeresource
+
+OpenStack API Ruby bindings with ActiveResource
+
+Supported API:
+* Glance
+* Keystone (admin and public)
+* Nova
+
+Tested on Folsom and Essex release.
+
+== Sample usages
+
+=== List available tenants (require the 'admin' role)
+
+    require 'openstack_activeresource'
+
+    # Set Keystone Public API endpoint
+    OpenStack::Keystone::Public::Base.site = "https://my.keystone.api.server:5000/v2.0/"
+
+    # Authentication
+    auth = OpenStack::Keystone::Public::Auth.create :username => "adminuser", :password => "adminpassword", :tenant_id => "admintenant_ID"
+
+    # Set the auth token for next API requests
+    OpenStack::Base.token = auth.token
+
+    OpenStack::Keystone::Public::Tenant.all.each { |tenant|
+        printf "Name: %s (id: %s, enabled? %s) - %s\n",
+            tenant.name.center(15), tenant.id.center(20), tenant.enabled.to_s.center(6), tenant.description
+    }
+
+=== Creating a new tenant and a new user (require the 'admin' role)
+
+    require 'openstack_activeresource'
+
+    # Set Keystone Public and Admin API endpoints
+    OpenStack::Keystone::Public::Base.site = "https://my.keystone.api.server:5000/v2.0/"
+    OpenStack::Keystone::Admin::Base.site = "https://my.keystone.api.server:35357/v2.0/"
+
+    # Authentication
+    auth = OpenStack::Keystone::Public::Auth.create :username => "adminuser", :password => "adminpassword", :tenant_id => "admintenant_ID"
+
+    # Set the auth token for next API requests
+    OpenStack::Base.token = auth.token
+
+    # Create a new tenant
+    new_tenant = OpenStack::Keystone::Admin::Tenant.create :enabled => true, :name => "TestTenant", :description => "My new tenant" 
+
+    # Create a new user in new_tenant
+    new_user = OpenStack::Keystone::Admin::User.create :tenant => new_tenant, :name => "TestUser", :password => "testpassword", :email => "test@user.com", :enabled => true
+
+    # Assign the "memberRole" in new_tenant to new_user
+    member_role = OpenStack::Keystone::Admin::Role.find_by_name "memberRole"
+    new_tenant.add_role_to_user member_role, new_user
+
+=== List image index from Nova
+
+    require 'openstack_activeresource'
+
+    # Set Keystone Public API endpoint
+    OpenStack::Keystone::Public::Base.site = "https://my.keystone.api.server:5000/v2.0/"
+
+    # Authentication
+    auth = OpenStack::Keystone::Public::Auth.create :username => "user", :password => "password", :tenant_id => "tenant_id"
+
+    # Set the auth token for next API requests
+    OpenStack::Base.token = auth.token
+
+    # Set the Nova Compute API endpoint from the received service catalog
+    OpenStack::Nova::Compute::Base.site = auth.endpoint_for('compute').publicURL
+
+    OpenStack::Nova::Compute::Image.all.each { |image|
+      printf "Name: %s (%s), minDisk: %3i, minRam: %5i, Status: %s, Progress: %3i\n",
+             image.name.center(40),
+             image.image_type.center(8),
+             image.min_disk || 0,
+             image.min_ram || 0,
+             image.status(7),
+             image.progress
+    }
+
+=== List virtual servers for a tenant
+
+    require 'openstack_activeresource'
+
+    # Set Keystone Public API endpoint
+    OpenStack::Keystone::Public::Base.site = "https://my.keystone.api.server:5000/v2.0/"
+
+    # Authentication
+    auth = OpenStack::Keystone::Public::Auth.create :username => "user", :password => "password", :tenant_id => "tenant_id"
+
+    # Set the auth token for next API requests
+    OpenStack::Base.token = auth.token
+
+    # Set the Nova Compute API endpoint from the received service catalog
+    OpenStack::Nova::Compute::Base.site = auth.endpoint_for('compute').publicURL
+
+    # Get all the servers
+    servers = OpenStack::Nova::Compute::Server.all
+
+    # To get only active server: OpenStack::Compute::Server.find :all, :params => {:status => "ACTIVE"}
+
+    servers.each { |s|
+      printf "Name: %s, Status: %s, Image: %s, Flavor: %s, Created: %s, Updated: %s\n",
+             s.name.center(20),
+             s.status.center(10),
+             s.image.id,
+             s.flavor.id,
+             s.created_at.to_time.localtime,
+             s.updated_at.to_time.localtime
+    }
+
+=== List available flavors
+
+    require 'openstack_activeresource'
+
+    # Set Keystone Public API endpoint
+    OpenStack::Keystone::Public::Base.site = "https://my.keystone.api.server:5000/v2.0/"
+
+    # Authentication
+    auth = OpenStack::Keystone::Public::Auth.create :username => "user", :password => "password", :tenant_id => "tenant_id"
+
+    # Set the auth token for next API requests
+    OpenStack::Base.token = auth.token
+
+    # Set the Nova Compute API endpoint from the received service catalog
+    OpenStack::Nova::Compute::Base.site = auth.endpoint_for('compute').publicURL
+
+    # Get available flavors
+    flavors = OpenStack::Nova::Compute::Flavor.all
+
+    flavors.each { |f|
+      printf "Name: %s, Id: %s, Ram: %5i, Disk: %3i (Ephemeral: %3i), vCPU: %2i\n", f.name.center(15), f.id.center(20), f.ram, f.disk, f.ephemeral_disk, f.vcpus
+    }
+
+=== Create a flavor (require 'admin' role)
+
+    require 'openstack_activeresource'
+
+    # Set Keystone Public API endpoint
+    OpenStack::Keystone::Public::Base.site = "https://my.keystone.api.server:5000/v2.0/"
+
+    # Authentication
+    auth = OpenStack::Keystone::Public::Auth.create :username => "adminuser", :password => "adminpassword", :tenant_id => "admintenant_ID"
+
+    # Set the auth token for next API requests
+    OpenStack::Base.token = auth.token
+
+    # Set the Nova Compute API endpoint from the received service catalog
+    OpenStack::Nova::Compute::Base.site = auth.endpoint_for('compute').publicURL
+
+    # Create a flavor
+    flavors = OpenStack::Nova::Compute::Flavor.create :name => 'my_new_flavor', :ram => 1024, :disk => 20, :ephemeral_disk => 0
+
+=== List available security groups
+
+    require 'openstack_activeresource'
+
+    # Set Keystone Public API endpoint
+    OpenStack::Keystone::Public::Base.site = "https://my.keystone.api.server:5000/v2.0/"
+
+    # Authentication
+    auth = OpenStack::Keystone::Public::Auth.create :username => "user", :password => "password", :tenant_id => "tenant_id"
+
+    # Set the auth token for next API requests
+    OpenStack::Base.token = auth.token
+
+    # Set the Nova Compute API endpoint from the received service catalog
+    OpenStack::Nova::Compute::Base.site = auth.endpoint_for('compute').publicURL
+
+    # Get available security groups
+    security_groups = OpenStack::Nova::Compute::SecurityGroup.all
+
+    security_groups.each { |sg|
+      printf "Name: %s, Description: %s\n", sg.name.center(20), sg.description.center(50)
+
+      sg.rules.each { |r|
+        printf "Protocol: %s, From port: %5i, To port: %5i, Addresses: %s\n",
+               r.ip_protocol.center(4),
+               r.from_port,
+               r.to_port,
+               r.cidr.present? ? r.cidr.center(18) : ''.center(18)
+      }
+      puts "\n"
+    }
+
+=== List available Floating IPs
+
+    require 'openstack_activeresource'
+
+    # Set Keystone Public API endpoint
+    OpenStack::Keystone::Public::Base.site = "https://my.keystone.api.server:5000/v2.0/"
+
+    # Authentication
+    auth = OpenStack::Keystone::Public::Auth.create :username => "user", :password => "password", :tenant_id => "tenant_id"
+
+    # Set the auth token for next API requests
+    OpenStack::Base.token = auth.token
+
+    # Set the Nova Compute API endpoint from the received service catalog
+    OpenStack::Nova::Compute::Base.site = auth.endpoint_for('compute').publicURL
+
+    # Get available floating IPs
+    floatings = OpenStack::Nova::Compute::FloatingIp.all
+
+    floatings.each { |floating|
+      printf "IP: %s, Fixed IP: %s, Pool: %s, Instance: %s (%s)\n",
+             floating.ip.center(20),
+             floating.fixed_ip.present? ? floating.fixed_ip.center(20) : "".center(20),
+             floating.pool.center(20),
+             floating.instance_id.present? ? floating.instance_id.center(40) : "".center(40),
+             floating.instance.present? ? floating.instance.name.center(15) : "".center(15)
+
+    }
+
+=== Start a new virtual server and play with it
+
+    require 'openstack_activeresource'
+
+    # Set Keystone Public API endpoint
+    OpenStack::Keystone::Public::Base.site = "https://my.keystone.api.server:5000/v2.0/"
+
+    # Authentication
+    auth = OpenStack::Keystone::Public::Auth.create :username => "user", :password => "password", :tenant_id => "tenant_id"
+
+    # Set the auth token for next API requests
+    OpenStack::Base.token = auth.token
+
+    # Set the Nova Compute API endpoint from the received service catalog
+    OpenStack::Nova::Compute::Base.site = auth.endpoint_for('compute').publicURL
+
+    # Generate a new keypair
+    new_keypair = OpenStack::Nova::Compute::KeyPair.create :name => 'my_new_keypair'
+
+    # Prints out keypair info (!)
+    printf "Public key: %s\nPrivate key: %s\nKeypair Fingerprint: %s\n",
+        new_keypair.public_key,
+        new_keypair.private_key,
+        new_keypair.fingerprint
+
+    # Start a new virtual server
+    new_server = OpenStack::Nova::Compute::Server.create(
+        :name => 'my_new_server',
+        :flavor => OpenStack::Nova::Compute::Flavor.find_by_name('m1.tiny'),
+        :image => OpenStack::Nova::Compute::Image.find_by_name('Ubuntu Server 12.04 LTS amd64')
+        :key_pair => new_keypair,
+        :security_groups => OpenStack::Nova::Compute::SecurityGroup.all
+    )
+
+    # ... time passes...
+    sleep 5
+    # ... time passes...
+    new_server.refresh_status!
+    # Get server status
+    puts new_server.status
+
+    # Pause/unpause the server
+    new_server.pause
+    # ... time passes...
+    sleep 5
+    # ... time passes...
+    new_server.unpause
+
+    # Suspend/resume the server
+    new_server.suspend
+    # ... time passes...
+    sleep 5
+    # ... time passes...
+    new_server.resume
+
+    # Reboot the server
+    # new_server.reboot(:type => [:soft|:hard]) default :hard
+    new_server.reboot
+
+    # Get the server console output (last 10 row, default 50)
+    puts new_server.console_output(10)
+
+    # Get the server noVNC console URL
+    puts new_server.vnc_console
+
+    # ...code for floating IP retrieval... save the floating IP in my_floating_IP
+    # Add a floating IP to the server
+    new_server.add_floating_ip my_floating_IP
+
+    # ...code for volume retrieval... save the volume in my_volume
+    # Attach a volume to new_server
+    new_server.attach_volume! my_volume, '/dev/vdb'
+
+
+=== List available volumes
+
+    require 'openstack_activeresource'
+
+    # Set Keystone Public API endpoint
+    OpenStack::Keystone::Public::Base.site = "https://my.keystone.api.server:5000/v2.0/"
+
+    # Authentication
+    auth = OpenStack::Keystone::Public::Auth.create :username => "user", :password => "password", :tenant_id => "tenant_id"
+
+    # Set the auth token for next API requests
+    OpenStack::Base.token = auth.token
+
+    # Set the Nova Volume API endpoint from the received service catalog
+    OpenStack::Nova::Volume::Base.site = auth.endpoint_for('volume').publicURL
+
+    # Get available volumes
+    volumes = OpenStack::Nova::Volume::Volume.all
+
+    volumes.each { |volume|
+      printf "Name: %s, Status: %s\n", volume.display_name.center(20), volume.status.center(50)
+    }
+
+=== Simple tenant usage (require 'admin' role)
+
+    require 'openstack_activeresource'
+
+    # Set Keystone Public and Admin API endpoints
+    OpenStack::Keystone::Public::Base.site = "https://my.keystone.api.server:5000/v2.0/"
+
+    # Authentication
+    auth = OpenStack::Keystone::Public::Auth.create :username => "adminuser", :password => "adminpassword", :tenant_id => "admintenant_ID"
+
+    # Set the auth token for next API requests
+    OpenStack::Base.token = auth.token
+
+    # Set the Nova Compute API endpoint from the received service catalog
+    OpenStack::Nova::Compute::Base.site = auth.endpoint_for('compute').publicURL
+
+    # Get the tenant
+    tenant = OpenStack::Keystone::Admin::Tenant.find_by_name "the_tenant"
+
+    # Get usage for a single tenant
+    simple_usage = OpenStack::Nova::Compute::SimpleTenantUsage.find tenant.id, :params => {:start => '1998-07-29T00:00:01', :end => '2012-07-09T00:00:00'}
+    # Or:
+    #past_month_start = (DateTime.now - 1.month).at_beginning_of_month
+    #past_month_end = (DateTime.now - 1.month).at_end_of_month
+    #simple_usage = OpenStack::Nova::Compute::SimpleTenantUsage.find_between_dates tenant.id, past_month_start, past_month_end
+
+    # get usage for all tenants
+    simple_usages = OpenStack::Nova::Compute::SimpleTenantUsage.find_from_date(:all, days.days.ago)
+
+    simple_usages.each { |usage|
+      printf "Tenant: %s, Total hours: %3.3f, Total memory: %8.3f, Total vcpus: %4.3f, Total disk: %5.3f\n",
+             usage.tenant_id.center(30),
+             usage.total_hours,
+             usage.total_memory_mb_usage,
+             usage.total_vcpus_usage,
+             usage.total_local_gb_usage
+
+      usage.server_usages.each { |su|
+        printf "\tName: %s, state: %s, vCPU: %2i, RAM: %5i, Disk: %3i, Started: %31s, Ended: %31s, Hours: %10.5f\n",
+               su.name.center(15),
+               su.state.center(15),
+               su.vcpus,
+               su.memory_mb,
+               su.local_gb,
+               su.started_at.to_time.localtime,
+               su.ended_at.nil? ? '' : su.ended_at.to_time.localtime,
+               su.hours
+      }
+      puts "\n"
+    }
+
+== Using OpenStack-ActiveResource with Ruby on Rails (sample usage)
+
+Create an helper method in your application controller
+
+    class ApplicationController < ActionController::Base
+
+        ...
+
+        private
+
+        def require_openstack_login
+          if OpenStack::Base.token.nil? or OpenStack::Base.token.expired?
+            OpenStack::Keystone::Public::Base.site = <keystone_public_api_uri>
+            # Admin API, if needed
+            OpenStack::Keystone::Admin::Base.site = <keystone_admin_api_uri>
+
+            auth = OpenStack::Keystone::Public::Auth.create :username => <username>, :password => <password>, :tenant_id => <tenant_id>
+
+            OpenStack::Base.token = auth.token
+
+            OpenStack::Nova::Compute::Base.site = auth.endpoint_for('compute').publicURL
+            # Set other endpoints if needed ...
+            # For instance:
+            #   OpenStack::Nova::Volume::Base.site = auth.endpoint_for('volume').publicURL
+
+          end
+        end
+
+        ...
+
+    end
+
+In controllers which need to access the openstack API,
+
+    class OpenStackConsumerController < ApplicationController
+
+        ...
+
+        # "Enable" openstack API only in methods where it is needed
+        before_filter :require_openstack_login, :only => [ :index, :show ]
+
+        ...
+
+    end
+
+== Contributing to openstack_activeresource
+ 
+* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
+* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
+* Fork the project.
+* Start a feature/bugfix branch.
+* Commit and push until you are happy with your contribution.
+* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
+* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+
+== Copyright
+
+Copyright (c) 2012 Unidada S.p.A. (Davide Guerri - d.guerri@unidata.it). See LICENSE.txt for
+further details.
+

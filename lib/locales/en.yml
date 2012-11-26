@@ -1,0 +1,5 @@
+en:
+  activemodel:
+    errors:
+      messages:
+        must_contain_at_least_one_digit_or_one_special_character: "must contain at least one digit or one special character"
