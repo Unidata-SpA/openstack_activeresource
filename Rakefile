@@ -17,27 +17,18 @@ Jeweler::Tasks.new do |gem|
   gem.name = "openstack_activeresource"
   gem.homepage = "http://github.com/dguerri/openstack_activeresource"
   gem.license = "GPLv3"
-  gem.summary = %Q{OpenStack API Ruby bindings with ActiveResource}
-  gem.description = %Q{OpenStack API Ruby bindings with ActiveResource}
-  gem.email = "d.guerri@unidata.it"
+  gem.summary = %Q{OpenStack Ruby and RoR bindings implemented with ActiveResource}
+  gem.description = %Q{OpenStack Ruby and RoR bindings implemented with ActiveResource}
+  gem.email = "d.guerri@rd.unidata.it"
   gem.authors = ["Davide Guerri"]
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
 
-require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-end
-
-require 'rcov/rcovtask'
-Rcov::RcovTask.new do |test|
-  test.libs << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-  test.rcov_opts << '--exclude "gems/*"'
+desc "Code coverage detail"
+task :simplecov do
+  ENV['COVERAGE'] = "true"
+  Rake::Task['<%= test_task %>'].execute
 end
 
 task :default => :test
