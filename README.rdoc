@@ -1,6 +1,6 @@
 = openstack_activeresource
 
-OpenStack API Ruby bindings with ActiveResource
+OpenStack Ruby and RoR bindings implemented with ActiveResource
 
 Supported API:
 * Glance
@@ -11,7 +11,13 @@ Tested on Folsom and Essex release.
 
 == Installation
 
+Command line:
+
     ~# gem install openstack_activeresource
+
+Or in bundler Gemfile:
+
+   gem "openstack_activeresource", "~> 0.1.2"
 
 == Sample usages
 
