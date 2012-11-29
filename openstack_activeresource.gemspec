@@ -5,13 +5,13 @@
 
 Gem::Specification.new do |s|
   s.name = "openstack_activeresource"
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Davide Guerri"]
   s.date = "2012-11-29"
-  s.description = "OpenStack Ruby and RoR bindings implemented with ActiveResource"
-  s.email = "d.guerri@rd.unidata.it"
+  s.description = "OpenStack Ruby and RoR bindings implemented with ActiveResource - See also http://www.unicloud.it"
+  s.email = "d.guerri@unidata.it"
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -61,10 +61,11 @@ Gem::Specification.new do |s|
     "lib/open_stack/nova/volume/base.rb",
     "lib/open_stack/nova/volume/volume.rb",
     "lib/openstack_activeresource.rb",
+    "openstack_activeresource.gemspec",
     "test/helper.rb",
     "test/test_openstack-activeresource.rb"
   ]
-  s.homepage = "http://github.com/dguerri/openstack_activeresource"
+  s.homepage = "https://github.com/Unidata-SpA/openstack_activeresource"
   s.licenses = ["GPLv3"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"
@@ -74,8 +75,8 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<activemodel>, [">= 0"])
-      s.add_runtime_dependency(%q<activeresource>, [">= 0"])
+      s.add_runtime_dependency(%q<activemodel>, ["~> 3.2.6"])
+      s.add_runtime_dependency(%q<activeresource>, ["~> 3.2.6"])
       s.add_runtime_dependency(%q<oj>, ["~> 1.2.9"])
       s.add_development_dependency(%q<shoulda>, [">= 0"])
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
@@ -83,8 +84,8 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.4"])
       s.add_development_dependency(%q<simplecov>, [">= 0"])
     else
-      s.add_dependency(%q<activemodel>, [">= 0"])
-      s.add_dependency(%q<activeresource>, [">= 0"])
+      s.add_dependency(%q<activemodel>, ["~> 3.2.6"])
+      s.add_dependency(%q<activeresource>, ["~> 3.2.6"])
       s.add_dependency(%q<oj>, ["~> 1.2.9"])
       s.add_dependency(%q<shoulda>, [">= 0"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
@@ -93,8 +94,8 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<simplecov>, [">= 0"])
     end
   else
-    s.add_dependency(%q<activemodel>, [">= 0"])
-    s.add_dependency(%q<activeresource>, [">= 0"])
+    s.add_dependency(%q<activemodel>, ["~> 3.2.6"])
+    s.add_dependency(%q<activeresource>, ["~> 3.2.6"])
     s.add_dependency(%q<oj>, ["~> 1.2.9"])
     s.add_dependency(%q<shoulda>, [">= 0"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
