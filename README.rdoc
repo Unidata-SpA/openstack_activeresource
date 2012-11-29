@@ -9,6 +9,10 @@ Supported API:
 
 Tested on Folsom and Essex release.
 
+== Installation
+
+    ~# gem install openstack_activeresource
+
 == Sample usages
 
 === List available tenants (require the 'admin' role)
