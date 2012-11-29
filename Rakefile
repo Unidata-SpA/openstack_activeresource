@@ -15,11 +15,11 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "openstack_activeresource"
-  gem.homepage = "http://github.com/dguerri/openstack_activeresource"
+  gem.homepage = "https://github.com/Unidata-SpA/openstack_activeresource"
   gem.license = "GPLv3"
   gem.summary = %Q{OpenStack Ruby and RoR bindings implemented with ActiveResource}
-  gem.description = %Q{OpenStack Ruby and RoR bindings implemented with ActiveResource}
-  gem.email = "d.guerri@rd.unidata.it"
+  gem.description = %Q{OpenStack Ruby and RoR bindings implemented with ActiveResource - See also http://www.unicloud.it}
+  gem.email = "d.guerri@unidata.it"
   gem.authors = ["Davide Guerri"]
   # dependencies defined in Gemfile
 end
