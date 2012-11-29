@@ -1,7 +1,7 @@
 source :rubygems
 
-gem "activemodel", :require => 'active_model'
-gem "activeresource", :require => 'active_resource'
+gem "activemodel", "~> 3.2.6", :require => 'active_model'
+gem "activeresource", "~> 3.2.6", :require => 'active_resource'
 
 gem "oj", "~> 1.2.9"
 

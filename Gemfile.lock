@@ -39,8 +39,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activemodel
-  activeresource
+  activemodel (~> 3.2.6)
+  activeresource (~> 3.2.6)
   bundler (~> 1.2.0)
   jeweler (~> 1.8.4)
   oj (~> 1.2.9)
