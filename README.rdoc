@@ -21,7 +21,7 @@ Or in bundler Gemfile:
 
 == Sample usages
 
-=== List available tenants (require the 'admin' role)
+=== List available tenants (requires the 'admin' role)
 
     require 'openstack_activeresource'
 
@@ -39,7 +39,7 @@ Or in bundler Gemfile:
             tenant.name.center(15), tenant.id.center(20), tenant.enabled.to_s.center(6), tenant.description
     }
 
-=== Creating a new tenant and a new user (require the 'admin' role)
+=== Creating a new tenant and a new user (requires the 'admin' role)
 
     require 'openstack_activeresource'
 
@@ -143,7 +143,7 @@ Or in bundler Gemfile:
       printf "Name: %s, Id: %s, Ram: %5i, Disk: %3i (Ephemeral: %3i), vCPU: %2i\n", f.name.center(15), f.id.center(20), f.ram, f.disk, f.ephemeral_disk, f.vcpus
     }
 
-=== Create a flavor (require 'admin' role)
+=== Create a flavor (requires 'admin' role)
 
     require 'openstack_activeresource'
 
@@ -320,7 +320,7 @@ Or in bundler Gemfile:
       printf "Name: %s, Status: %s\n", volume.display_name.center(20), volume.status.center(50)
     }
 
-=== Simple tenant usage (require 'admin' role)
+=== Simple tenant usage (requires 'admin' role)
 
     require 'openstack_activeresource'
 
