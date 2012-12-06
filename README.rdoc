@@ -1,6 +1,6 @@
 = openstack_activeresource
 
-OpenStack Ruby and RoR bindings implemented with ActiveResource
+OpenStack Ruby (and RoR) bindings implemented on top of ActiveResource
 
 Supported API:
 * Glance
