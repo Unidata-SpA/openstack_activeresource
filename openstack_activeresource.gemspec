@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "openstack_activeresource"
-  s.version = "0.1.2"
+  s.version = "0.1.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Davide Guerri"]
-  s.date = "2012-11-29"
+  s.date = "2012-12-31"
   s.description = "OpenStack Ruby and RoR bindings implemented with ActiveResource - See also http://www.unicloud.it"
   s.email = "d.guerri@unidata.it"
   s.extra_rdoc_files = [
@@ -78,18 +78,18 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<activemodel>, ["~> 3.2.6"])
       s.add_runtime_dependency(%q<activeresource>, ["~> 3.2.6"])
       s.add_runtime_dependency(%q<oj>, ["~> 1.2.9"])
-      s.add_development_dependency(%q<shoulda>, [">= 0"])
-      s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
-      s.add_development_dependency(%q<bundler>, ["~> 1.2.0"])
-      s.add_development_dependency(%q<jeweler>, ["~> 1.8.4"])
-      s.add_development_dependency(%q<simplecov>, [">= 0"])
+      s.add_runtime_dependency(%q<bundler>, ["~> 1.2.0"])
+      s.add_runtime_dependency(%q<shoulda>, [">= 0"])
+      s.add_runtime_dependency(%q<rdoc>, ["~> 3.12"])
+      s.add_runtime_dependency(%q<jeweler>, ["~> 1.8.4"])
+      s.add_runtime_dependency(%q<simplecov>, [">= 0"])
     else
       s.add_dependency(%q<activemodel>, ["~> 3.2.6"])
       s.add_dependency(%q<activeresource>, ["~> 3.2.6"])
       s.add_dependency(%q<oj>, ["~> 1.2.9"])
+      s.add_dependency(%q<bundler>, ["~> 1.2.0"])
       s.add_dependency(%q<shoulda>, [">= 0"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
-      s.add_dependency(%q<bundler>, ["~> 1.2.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
       s.add_dependency(%q<simplecov>, [">= 0"])
     end
@@ -97,9 +97,9 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<activemodel>, ["~> 3.2.6"])
     s.add_dependency(%q<activeresource>, ["~> 3.2.6"])
     s.add_dependency(%q<oj>, ["~> 1.2.9"])
+    s.add_dependency(%q<bundler>, ["~> 1.2.0"])
     s.add_dependency(%q<shoulda>, [">= 0"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
-    s.add_dependency(%q<bundler>, ["~> 1.2.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
     s.add_dependency(%q<simplecov>, [">= 0"])
   end
