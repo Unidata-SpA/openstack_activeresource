@@ -18,7 +18,10 @@
 require 'rubygems'
 require 'bundler'
 
-Bundler.setup
+libdir = File.dirname(__FILE__)
+Dir.chdir libdir do
+  Bundler.setup
+end
 Bundler.require :default
 
 open_stack_path = File.expand_path('..', __FILE__)
