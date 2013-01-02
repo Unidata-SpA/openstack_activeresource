@@ -85,7 +85,7 @@ module OpenStack
 
           super(new_attributes, persisted)
 
-          @attributes[:security_group_ids] = get_security_group_ids(attributes[:security_groups])
+          @attributes[:security_group_ids] = get_security_group_ids
 
           self
         end
