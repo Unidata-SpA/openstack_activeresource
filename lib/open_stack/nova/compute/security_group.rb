@@ -73,7 +73,7 @@ module OpenStack
           super(new_attributes, persisted)
         end
 
-        # Overload ActiveRecord::encode method
+        # Override ActiveRecord::encode method
         # Custom encoding to deal with openstack API
         def encode(options={})
           to_encode = {
