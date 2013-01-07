@@ -20,7 +20,7 @@ module OpenStack
     module Compute
 
       class SecurityGroup < Base
-        self.element_name = "os-security-group"
+        self.element_name = "security_group"
         self.collection_name = "os-security-groups"
 
         schema do
@@ -35,7 +35,7 @@ module OpenStack
       end
 
       class SecurityGroup::Rule < Base
-        self.element_name = "os-security-group-rule"
+        self.element_name = "security_group_rule"
         self.collection_name = "os-security-group-rules"
 
         schema do
@@ -114,4 +114,3 @@ module OpenStack
     end
   end
 end
-
