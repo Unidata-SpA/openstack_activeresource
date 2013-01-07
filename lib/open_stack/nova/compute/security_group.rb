@@ -20,7 +20,7 @@ module OpenStack
     module Compute
 
       class SecurityGroup < Base
-        self.element_name = "os-security-group"
+        self.element_name = "security_group"
         self.collection_name = "os-security-groups"
 
         schema do
@@ -35,7 +35,7 @@ module OpenStack
       end
 
       class SecurityGroup::Rule < Base
-        self.element_name = "os-security-group-rule"
+        self.element_name = "security_group_rule"
         self.collection_name = "os-security-group-rules"
 
         schema do
@@ -67,13 +67,13 @@ module OpenStack
               :ip_protocol => attributes[:ip_protocol],
               :from_port => attributes[:from_port],
               :to_port => attributes[:to_port],
-              :cidr => attributes[:cidr] || attributes[:ip_range][:cidr],
+              :cidr => attributes[:cidr] || (attributes[:ip_range].present? ? attributes[:ip_range][:cidr] : nil,
               :parent_group_id => attributes[:parent_group].present? ? attributes[:parent_group].id : nil
           }
           super(new_attributes, persisted)
         end
 
-        # Overload ActiveRecord::encode method
+        # Override ActiveRecord::encode method
         # Custom encoding to deal with openstack API
         def encode(options={})
           to_encode = {
@@ -114,4 +114,3 @@ module OpenStack
     end
   end
 end
-
