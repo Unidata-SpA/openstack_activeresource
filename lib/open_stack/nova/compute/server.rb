@@ -83,9 +83,16 @@ module OpenStack
             new_attributes[:flavor_id] = attributes[:flavor_id]
           end
 
-          super(new_attributes, persisted)
+          if persisted
+            # We ignore the list of security group names provided in attributes[:security_group]
+            # Security group ids will be retrieved when needed
+            new_attributes[:security_group_ids] = []
+          else
 
-          @attributes[:security_group_ids] = get_security_group_ids
+            new_attributes[:security_group_ids] = attributes[:security_group_ids] || attributes[:security_groups].map { |sg| sg.id }
+          end
+
+          super(new_attributes, persisted)
 
           self
         end
@@ -104,7 +111,7 @@ module OpenStack
           # Optional attributes (openstack will not accept empty attribute for update/create)
           to_encode[:server][:user_data] = Base64.encode64(user_data) if user_data.present?
           to_encode[:server][:key_name] = key_pair_id if key_pair_id.present?
-          to_encode[:server][:security_groups] = get_security_groups.map { |sg| {:name => sg.name} } || []
+          to_encode[:server][:security_groups] = security_groups.map { |sg| {:name => sg.name} }
 
           to_encode.send("to_#{self.class.format.extension}", options)
         end
@@ -136,13 +143,19 @@ module OpenStack
         end
 
         def security_groups
-          get_security_groups
+          if persisted?
+            get('os-security-groups').map { |sg| OpenStack::Nova::Compute::SecurityGroup.new(sg, true) }
+          else
+            security_group_ids.map { |sg_id| OpenStack::Nova::Compute::SecurityGroup.find sg_id }
+          end
         end
 
         def security_groups=(security_groups)
           return if persisted? # Do Nothing (it's a read-only attribute for OpenStack)
 
-          @attributes[:security_group_ids] = get_security_group_ids(security_groups)
+          security_group_ids = security_groups.map { |sg| sg.id }
+
+          security_groups
         end
 
         def addresses
@@ -281,29 +294,6 @@ module OpenStack
         # Resume a SUSPENDED server.
         def resume
           post(:action, {}, {:'resume' => nil}.to_json)
-        end
-
-        private
-
-        def get_security_groups
-          security_group_ids.map { |sg_id|
-            SecurityGroup.find sg_id
-          }
-        end
-
-        def get_security_group_ids(security_groups=nil)
-          if security_groups.nil?
-            if persisted?
-
-              get('os-security-groups').map { |security_group| security_group.with_indifferent_access[:id] }
-            else
-
-              []
-            end
-          else
-
-            security_groups.map { |security_group| security_group.id }
-          end
         end
 
       end
