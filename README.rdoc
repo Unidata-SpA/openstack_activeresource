@@ -17,7 +17,7 @@ Command line:
 
 Or in bundler Gemfile:
 
-   gem "openstack_activeresource", "~> 0.1.2"
+   gem "openstack_activeresource", "~> 0.1.8"
 
 == Sample usages
 
@@ -114,8 +114,8 @@ Or in bundler Gemfile:
       printf "Name: %s, Status: %s, Image: %s, Flavor: %s, Created: %s, Updated: %s\n",
              s.name.center(20),
              s.status.center(10),
-             s.image.id,
-             s.flavor.id,
+             (s.image.name rescue 'not found').center(40),
+             (s.flavor.name rescue 'not found').center(40),
              s.created_at.to_time.localtime,
              s.updated_at.to_time.localtime
     }

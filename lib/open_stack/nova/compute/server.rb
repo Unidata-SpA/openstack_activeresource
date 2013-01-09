@@ -60,9 +60,6 @@ module OpenStack
               :power_state => attributes['OS-EXT-STS:power_state'],
               :host_id => attributes[:hostId],
               :user_data => attributes[:user_data],
-              # :tenant_id => attributes[:tenant_id],
-              # :user_id => attributes[:user_id],
-              :addresses => attributes[:addresses] || []
           }
 
           if attributes[:key_pair].present?
@@ -162,12 +159,11 @@ module OpenStack
           addresses = {}
           if persisted?
             response = get('ips')
-            response.each { |net, address|
+            response.each do |net, address|
               addresses[net] = address
-            }
-          else
-            attributes[:addresses]
+            end
           end
+          addresses
         end
 
         def addresses=(something)
