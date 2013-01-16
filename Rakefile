@@ -19,7 +19,7 @@ Jeweler::Tasks.new do |gem|
   gem.license = "GPLv3"
   gem.summary = %Q{OpenStack Ruby and RoR bindings implemented with ActiveResource}
   gem.description = %Q{OpenStack Ruby and RoR bindings implemented with ActiveResource - See also http://www.unicloud.it}
-  gem.email = "d.guerri@unidata.it"
+  gem.email = "d.guerri@rd.unidata.it"
   gem.authors = ["Davide Guerri"]
   # dependencies defined in Gemfile
 end

@@ -67,7 +67,7 @@ module OpenStack
               :ip_protocol => attributes[:ip_protocol],
               :from_port => attributes[:from_port],
               :to_port => attributes[:to_port],
-              :cidr => attributes[:cidr] || (attributes[:ip_range].present? ? attributes[:ip_range][:cidr] : nil,
+              :cidr => attributes[:cidr] || (attributes[:ip_range].present? ? attributes[:ip_range][:cidr] : nil),
               :parent_group_id => attributes[:parent_group].present? ? attributes[:parent_group].id : nil
           }
           super(new_attributes, persisted)
