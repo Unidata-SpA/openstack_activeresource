@@ -49,6 +49,10 @@ module OpenStack
           @attributes[:'OS-FLV-EXT-DATA:ephemeral'] || nil
         end
 
+        def description
+          "#{vcpus} vCPU - #{ram} MB RAM - #{disk} GB Disk"
+        end
+
       end
 
     end
