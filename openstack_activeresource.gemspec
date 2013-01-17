@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "openstack_activeresource"
-  s.version = "0.1.10"
+  s.version = "0.1.11"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Davide Guerri"]
-  s.date = "2013-01-16"
+  s.date = "2013-01-17"
   s.description = "OpenStack Ruby and RoR bindings implemented with ActiveResource - See also http://www.unicloud.it"
   s.email = "d.guerri@rd.unidata.it"
   s.extra_rdoc_files = [
@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "lib/hot_fixes.rb",
-    "lib/locales/en.yml",
+    "lib/locales/openstack_activeresource.en.yml",
     "lib/open_stack.rb",
     "lib/open_stack/base.rb",
     "lib/open_stack/common.rb",
