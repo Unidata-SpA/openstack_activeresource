@@ -292,6 +292,26 @@ module OpenStack
           post(:action, {}, {:'resume' => nil}.to_json)
         end
 
+        # true if the status is ACTIVE
+        def active?
+          status == "ACTIVE"
+        end
+
+        # true if the status is PAUSED
+        def paused?
+          status == "PAUSED"
+        end
+
+        # true if the status is SHUTOFF
+        def shutoff?
+          status == "SHUTOFF"
+        end
+
+        # true if the status is DELETED
+        def deleted?
+          status == "DELETED"
+        end
+
       end
 
     end
