@@ -198,7 +198,7 @@ module OpenStack
 
         SERVER_STATUSES = {
             :ACTIVE => I18n.t(:active),
-            :BUILD => I18n.t(:builing),
+            :BUILD => I18n.t(:building),
             :DELETED => I18n.t(:deleted),
             :ERROR => I18n.t(:in_error),
             :HARD_REBOOT => I18n.t(:hard_rebooting),
