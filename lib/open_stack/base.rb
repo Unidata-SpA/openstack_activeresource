@@ -36,7 +36,7 @@ module OpenStack
       end
 
       if self.token.present?
-        _headers['X-Auth-Token'] = self.token.id
+        _headers['X-Auth-Token'] = self.token
       end
 
       _headers
@@ -45,7 +45,7 @@ module OpenStack
     protected
 
     def self.token=(token)
-      Thread.current[:open_stack_token] = token
+      Thread.current[:open_stack_token] = token.is_a?(OpenStack::Keystone::Public::Auth::Token) ? token.id : token
     end
 
     def self.token
