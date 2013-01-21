@@ -1,0 +1,25 @@
+en:
+  activemodel:
+    errors:
+      messages:
+        must_contain_at_least_one_digit_or_one_special_character: "must contain at least one digit or one special character"
+        
+  openstack:
+    status:
+      active: "active"
+      awaiting_verification: "awaiting verification"
+      building: "building"
+      deleted: "deleted"
+      hard_rebooting: "hard rebooting"
+      in_error: "in error"
+      in_rescue_mode: "in rescue mode"
+      paused: "paused"
+      rebuilding_from_image: "rebuilding from image"
+      resetting_password: "resetting password"
+      resizing: "resizing"
+      revert_resizing: "revert resizing"
+      soft_rebooting: "soft rebooting"
+      suspended: "suspended"
+      unknown: "unknown"
+      user_powered_down: "user powered down"
+

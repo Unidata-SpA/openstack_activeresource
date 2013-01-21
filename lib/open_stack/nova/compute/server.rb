@@ -197,22 +197,22 @@ module OpenStack
         end
 
         SERVER_STATUSES = {
-            :ACTIVE => I18n.t(:active),
-            :BUILD => I18n.t(:builing),
-            :DELETED => I18n.t(:deleted),
-            :ERROR => I18n.t(:in_error),
-            :HARD_REBOOT => I18n.t(:hard_rebooting),
-            :PASSWORD => I18n.t(:resetting_password),
-            :REBOOT => I18n.t(:soft_rebooting),
-            :REBUILD => I18n.t(:rebuilding_from_image),
-            :RESCUE => I18n.t(:in_rescue_mode),
-            :RESIZE => I18n.t(:resizing),
-            :REVERT_RESIZE => I18n.t(:revert_resizing),
-            :SHUTOFF => I18n.t(:user_powered_down),
-            :SUSPENDED => I18n.t(:suspended),
-            :PAUSED => I18n.t(:paused),
-            :UNKNOWN => I18n.t(:unknown),
-            :VERIFY_RESIZE => I18n.t(:awaiting_verification)
+            :ACTIVE => I18n.t(:active, :scope => [:openstack, :status]),
+            :BUILD => I18n.t(:building, :scope => [:openstack, :status]),
+            :DELETED => I18n.t(:deleted, :scope => [:openstack, :status]),
+            :ERROR => I18n.t(:in_error, :scope => [:openstack, :status]),
+            :HARD_REBOOT => I18n.t(:hard_rebooting, :scope => [:openstack, :status]),
+            :PASSWORD => I18n.t(:resetting_password, :scope => [:openstack, :status]),
+            :REBOOT => I18n.t(:soft_rebooting, :scope => [:openstack, :status]),
+            :REBUILD => I18n.t(:rebuilding_from_image, :scope => [:openstack, :status]),
+            :RESCUE => I18n.t(:in_rescue_mode, :scope => [:openstack, :status]),
+            :RESIZE => I18n.t(:resizing, :scope => [:openstack, :status]),
+            :REVERT_RESIZE => I18n.t(:revert_resizing, :scope => [:openstack, :status]),
+            :SHUTOFF => I18n.t(:user_powered_down, :scope => [:openstack, :status]),
+            :SUSPENDED => I18n.t(:suspended, :scope => [:openstack, :status]),
+            :PAUSED => I18n.t(:paused, :scope => [:openstack, :status]),
+            :UNKNOWN => I18n.t(:unknown, :scope => [:openstack, :status]),
+            :VERIFY_RESIZE => I18n.t(:awaiting_verification, :scope => [:openstack, :status])
         }.with_indifferent_access
 
         # Returns an extended description for the server status
@@ -290,6 +290,26 @@ module OpenStack
         # Resume a SUSPENDED server.
         def resume
           post(:action, {}, {:'resume' => nil}.to_json)
+        end
+
+        # true if the status is ACTIVE
+        def active?
+          status == "ACTIVE"
+        end
+
+        # true if the status is PAUSED
+        def paused?
+          status == "PAUSED"
+        end
+
+        # true if the status is SHUTOFF
+        def shutoff?
+          status == "SHUTOFF"
+        end
+
+        # true if the status is DELETED
+        def deleted?
+          status == "DELETED"
         end
 
       end
