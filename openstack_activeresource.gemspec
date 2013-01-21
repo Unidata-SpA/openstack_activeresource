@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "openstack_activeresource"
-  s.version = "0.1.11"
+  s.version = "0.1.12"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Davide Guerri"]
-  s.date = "2013-01-17"
+  s.date = "2013-01-21"
   s.description = "OpenStack Ruby and RoR bindings implemented with ActiveResource - See also http://www.unicloud.it"
   s.email = "d.guerri@rd.unidata.it"
   s.extra_rdoc_files = [
