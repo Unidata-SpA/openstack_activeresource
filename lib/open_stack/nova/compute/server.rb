@@ -106,7 +106,7 @@ module OpenStack
           }
 
           # Optional attributes (openstack will not accept empty attribute for update/create)
-          to_encode[:server][:user_data] = Base64.encode64(user_data) if user_data.present?
+          to_encode[:server][:user_data] = Base64.strict_encode64(user_data) if user_data.present?
           to_encode[:server][:key_name] = key_pair_id if key_pair_id.present?
           to_encode[:server][:security_groups] = security_groups.map { |sg| {:name => sg.name} }
 
