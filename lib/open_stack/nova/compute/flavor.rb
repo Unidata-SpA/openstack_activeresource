@@ -36,7 +36,7 @@ module OpenStack
         validates :ephemeral_disk, :presence => false, :numericality => {:greater_than_or_equal_to => 10, :only_integer => true}
 
         def self.find_all_by_name(name)
-          all.reject! { |flavor| flavor.name != name }
+          all.reject { |flavor| flavor.name != name }
         end
 
         def self.find_by_name(name)
