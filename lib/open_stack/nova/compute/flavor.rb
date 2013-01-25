@@ -45,6 +45,23 @@ module OpenStack
           nil
         end
 
+        def self.find_by_constraints(constraints = {})
+          constraints = constraints.with_indifferent_access
+          constraints[:ram]   ||= -1.0/0.0
+          constraints[:vcpus] ||= -1.0/0.0
+          constraints[:disk]  ||= -1.0/0.0
+
+          all.select { |flavor| flavor.ram >= constraints[:ram] and flavor.vcpus >= constraints[:vcpus] and flavor.disk >= constraints[:disk] }
+        end
+
+        def self.applicable_for_image(image)
+          constraints = {}
+          constraints[:ram]   = image.min_ram if image.min_ram > 0
+          constraints[:disk]  = image.min_disk if image.min_disk > 0
+
+          find_by_constraints constraints
+        end
+
         def ephemeral_disk
           @attributes[:'OS-FLV-EXT-DATA:ephemeral'] || nil
         end
