@@ -17,7 +17,7 @@ Command line:
 
 Or in bundler Gemfile:
 
-   gem "openstack_activeresource", "~> 0.1.8"
+   gem "openstack_activeresource", "~> 0.1.12"
 
 == Sample usages
 
@@ -63,7 +63,7 @@ Or in bundler Gemfile:
     member_role = OpenStack::Keystone::Admin::Role.find_by_name "memberRole"
     new_tenant.add_role_to_user member_role, new_user
 
-=== List image index from Nova
+=== Image index from Nova
 
     require 'openstack_activeresource'
 
@@ -138,6 +138,20 @@ Or in bundler Gemfile:
 
     # Get available flavors
     flavors = OpenStack::Nova::Compute::Flavor.all
+
+    flavors.each { |f|
+      printf "Name: %s, Id: %s, Ram: %5i, Disk: %3i (Ephemeral: %3i), vCPU: %2i\n", f.name.center(15), f.id.center(20), f.ram, f.disk, f.ephemeral_disk, f.vcpus
+    }
+
+    # Get flavors that meet the given constraints
+    flavors = OpenStack::Nova::Compute::Flavor.find_by_constraints( :ram => 2048, :vcpus => 4, :disk => 20 )
+
+    flavors.each { |f|
+      printf "Name: %s, Id: %s, Ram: %5i, Disk: %3i (Ephemeral: %3i), vCPU: %2i\n", f.name.center(15), f.id.center(20), f.ram, f.disk, f.ephemeral_disk, f.vcpus
+    }
+
+    # Get available flavors that can be used for a given image
+    flavors = OpenStack::Nova::Compute::Flavor.applicable_for_image( OpenStack::Nova::Compute::Image.all.last )
 
     flavors.each { |f|
       printf "Name: %s, Id: %s, Ram: %5i, Disk: %3i (Ephemeral: %3i), vCPU: %2i\n", f.name.center(15), f.id.center(20), f.ram, f.disk, f.ephemeral_disk, f.vcpus

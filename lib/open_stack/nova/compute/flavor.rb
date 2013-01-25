@@ -36,13 +36,30 @@ module OpenStack
         validates :ephemeral_disk, :presence => false, :numericality => {:greater_than_or_equal_to => 10, :only_integer => true}
 
         def self.find_all_by_name(name)
-          all.reject! { |flavor| flavor.name != name }
+          all.reject { |flavor| flavor.name != name }
         end
 
         def self.find_by_name(name)
           all.each { |flavor| return flavor if flavor.name == name }
 
           nil
+        end
+
+        def self.find_by_constraints(constraints = {})
+          constraints = constraints.with_indifferent_access
+          constraints[:ram]   ||= -1.0/0.0
+          constraints[:vcpus] ||= -1.0/0.0
+          constraints[:disk]  ||= -1.0/0.0
+
+          all.select { |flavor| flavor.ram >= constraints[:ram] and flavor.vcpus >= constraints[:vcpus] and flavor.disk >= constraints[:disk] }
+        end
+
+        def self.applicable_for_image(image)
+          constraints = {}
+          constraints[:ram]   = image.min_ram if image.min_ram > 0
+          constraints[:disk]  = image.min_disk if image.min_disk > 0
+
+          find_by_constraints constraints
         end
 
         def ephemeral_disk
