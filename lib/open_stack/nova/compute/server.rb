@@ -220,6 +220,11 @@ module OpenStack
           SERVER_STATUSES[status]
         end
 
+        # Returns a localized description for the server task (if any)
+        def task_description
+          I18n.t(task, :scope => [:openstack, :tasks]) if task.present?
+        end
+
         ## Actions
 
         # Assign a floating IP to the server.

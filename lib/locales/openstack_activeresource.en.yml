@@ -23,3 +23,13 @@ en:
       unknown: "unknown"
       user_powered_down: "user powered down"
 
+    tasks:
+      deleting: "deleting"
+      networking: "networking"
+      pausing: "pausing"
+      rebooting_hard: "rebooting hard"
+      scheduling: "scheduling"
+      spawning: "spawning"
+      starting: "starting"
+      stopping: "stopping"
+      unpausing: "unpausing"
