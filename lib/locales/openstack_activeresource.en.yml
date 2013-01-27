@@ -24,6 +24,7 @@ en:
       user_powered_down: "user powered down"
 
     tasks:
+      block_device_mapping: "block device mapping"
       deleting: "deleting"
       networking: "networking"
       pausing: "pausing"
