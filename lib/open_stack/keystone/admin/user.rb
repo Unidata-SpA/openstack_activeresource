@@ -82,9 +82,7 @@ module OpenStack
         end
 
         def self.find_by_name(name)
-          all.each { |user| return user if user.name == name }
-
-          nil
+          all.detect { |user| user.name == name }
         end
 
         def roles(scope = :all)
