@@ -16,3 +16,10 @@ require 'openstack_activeresource'
 
 class Test::Unit::TestCase
 end
+
+# Load test configuration for OpenStack API
+test_path = File.expand_path('..', __FILE__)
+$:.unshift(test_path)
+
+TEST_CONFIG = (YAML.load_file("#{test_path}/test_configuration.yml")['test_configuration']).with_indifferent_access
+
