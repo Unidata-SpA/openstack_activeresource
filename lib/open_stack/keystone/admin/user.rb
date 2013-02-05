@@ -84,9 +84,14 @@ module OpenStack
         def self.find_by_name(name)
           all.detect { |user| user.name == name }
         end
+        
+        def tenant
+          OpenStack::Keystone::Admin::Tenant.find tenant_id
+        end
 
-        def roles(scope = :all)
-          OpenStack::Keystone::Admin::UserRole.find(scope, :params => { :tenant_id => self.tenant_id, :user_id => self.id })
+        def roles(scope = :all, tenant = nil)
+          tenant_id = tenant.is_a?(OpenStack::Keystone::Admin::Tenant) ? tenant.id : (tenant || self.tenant_id)
+          OpenStack::Keystone::Admin::UserRole.find(scope, :params => { :tenant_id => tenant_id, :user_id => self.id })
         end
 
       end
