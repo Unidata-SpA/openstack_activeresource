@@ -1,6 +1,8 @@
 test_configuration:
   public_base_site:   "https://my.api.com:5000/v2.0/"
   public_admin_site:  "https://my.api.com:35357/v2.0/"
+  image_id:           "xxxx"
+  flavor_name:        "yyyy"
   user_username:      "user_username"
   user_password:      "user_password"
   user_tenant_id:     "user_tenant_id"

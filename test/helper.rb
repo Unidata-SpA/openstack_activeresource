@@ -21,7 +21,7 @@ end
 test_path = File.expand_path('..', __FILE__)
 $:.unshift(test_path)
 
-unless  File.exist? "#{test_path}/test_configuration.ymla"
+unless  File.exist? "#{test_path}/test_configuration.yml"
   raise "\n****" +
             "\n**** Please add a valid 'test_configuration.yml' file in '#{test_path}'." +
             "\n**** See #{test_path}/test_configuration-sample.yml for an example" +
