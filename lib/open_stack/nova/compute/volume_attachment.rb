@@ -22,10 +22,7 @@ module OpenStack
       class VolumeAttachment < Base
         self.element_name = "volumeAttachment"
         self.collection_name = "os-volume_attachments"
-
-        def self.site
-          superclass.site + "servers/:server_id"
-        end
+        self.site = superclass.site + "servers/:server_id"
 
         schema do
           attribute :device, :string

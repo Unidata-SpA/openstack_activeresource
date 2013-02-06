@@ -32,6 +32,13 @@ module OpenStack
         def self.site=(site)
           super(site)
           Thread.current[:open_stack_keystone_public_site] = @site
+          # Regenerate the prefix method
+          default = @site.path
+          default << '/' unless default[-1..-1] == '/'
+          # generate the actual method based on the current site path
+          self.prefix = default
+
+          @site
         end
 
       end
