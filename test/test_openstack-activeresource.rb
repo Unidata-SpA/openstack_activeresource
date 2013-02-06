@@ -196,16 +196,17 @@ class TestOpenStackActiveResource < Test::Unit::TestCase
   def test_server_create_destroy
     auth_user
 
-    flavor = OpenStack::Nova::Compute::Flavor.first
-    image = OpenStack::Nova::Compute::Image.last
-    security_groups = OpenStack::Nova::Compute::SecurityGroup.first
+    flavor = OpenStack::Nova::Compute::Flavor.find_by_name TEST_CONFIG[:flavor_name]
+    assert_not_nil flavor
+
+    image = OpenStack::Nova::Compute::Image.find TEST_CONFIG[:image_id]
+    assert_not_nil image
 
     new_server_id = nil
     assert_nothing_raised ActiveResource::ClientError, "Failed to create a new server" do
       new_server = OpenStack::Nova::Compute::Server.create :name => 'test_server',
                                                            :flavor => flavor,
-                                                           :image => image,
-                                                           :security_groups => [security_groups]
+                                                           :image => image
       assert_not_nil new_server
       new_server_id = new_server.id
     end
