@@ -86,7 +86,12 @@ module OpenStack
             new_attributes[:security_group_ids] = []
           else
 
-            new_attributes[:security_group_ids] = attributes[:security_group_ids] || attributes[:security_groups].map { |sg| sg.id }
+            if attributes[:security_group_ids].nil?
+              new_attributes[:security_group_ids] = attributes[:security_groups].nil? ? [] : attributes[:security_groups].map { |sg| sg.id }
+            else
+              new_attributes[:security_group_ids] = attributes[:security_group_ids]
+            end
+
           end
 
           super(new_attributes, persisted)
