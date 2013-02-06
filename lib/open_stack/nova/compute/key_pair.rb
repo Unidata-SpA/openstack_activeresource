@@ -30,6 +30,10 @@ module OpenStack
           attribute :fingerprint, :string
         end
 
+        def id
+          name
+        end
+
         def self.find_all_by_name(name)
           all.reject! { |key_pair| key_pair.name != name }
         end

@@ -21,11 +21,7 @@ module OpenStack
 
       class UserRole < Base
         self.element_name = "role"
-
-        def self.site
-          superclass.site + "tenants/:tenant_id/users/:user_id"
-
-        end
+        self.site = superclass.site + "tenants/:tenant_id/users/:user_id"
 
       end
 

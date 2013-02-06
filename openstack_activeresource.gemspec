@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "openstack_activeresource"
-  s.version = "0.1.13"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Davide Guerri"]
-  s.date = "2013-01-25"
+  s.date = "2013-02-06"
   s.description = "OpenStack Ruby and RoR bindings implemented with ActiveResource - See also http://www.unicloud.it"
   s.email = "d.guerri@rd.unidata.it"
   s.extra_rdoc_files = [
@@ -62,7 +62,9 @@ Gem::Specification.new do |s|
     "lib/open_stack/nova/volume/volume.rb",
     "lib/openstack_activeresource.rb",
     "openstack_activeresource.gemspec",
+    "test/.gitignore",
     "test/helper.rb",
+    "test/test_configuration-sample.yml",
     "test/test_openstack-activeresource.rb"
   ]
   s.homepage = "https://github.com/Unidata-SpA/openstack_activeresource"
