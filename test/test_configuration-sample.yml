@@ -1,9 +1,11 @@
-test:
+test_configuration:
   public_base_site:   "https://my.api.com:5000/v2.0/"
   public_admin_site:  "https://my.api.com:35357/v2.0/"
-  admin_username:     "admin"
-  admin_password:     "password"
-  admin_tenant_id:    "admin_tenant_id"
-  user_username:      "user"
-  user_password:      "password"
+  user_username:      "user_username"
+  user_password:      "user_password"
   user_tenant_id:     "user_tenant_id"
+  admin_username:     "admin_username"
+  admin_password:     "admin_password"
+  admin_tenant_id:    "admin_tenant_id"
+
+# If admin_* are omitted the corresponding tests will be skipped
