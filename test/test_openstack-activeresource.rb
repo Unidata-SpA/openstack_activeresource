@@ -223,13 +223,11 @@ class TestOpenStackActiveResource < Test::Unit::TestCase
     assert_not_nil my_server, "Server not spawned after 5 seconds!?!"
 
     # Wait for a network address
-    my_fixed_address = loop_block(60) do
+    my_address = loop_block(60) do
       my_server = OpenStack::Nova::Compute::Server.find new_server_id
-      return my_server.addresses[0] if my_server.addresses.count > 0
-
-      nil
+      my_server.addresses.keys.count > 0 ? my_server.addresses : nil
     end
-    assert_not_nil my_fixed_address, "No fixed address after a minute!"
+    assert_not_nil my_address, "No address after a minute!"
 
     assert_nothing_raised ActiveResource::ClientError, "Problem retrieving the server '#{new_server_id}'" do
       my_server = OpenStack::Nova::Compute::Server.find new_server_id
