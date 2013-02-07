@@ -26,6 +26,7 @@ module OpenStack
     self.format = :json
     self.timeout = 5
 
+    # Set the X-Auth-Token header if the OpenStack authentication token is present
     def self.headers
       if defined?(@headers)
         _headers = @headers
@@ -44,11 +45,15 @@ module OpenStack
 
     protected
 
+    # Set the authentication token
     def self.token=(token)
+      # Trying to be thread safe here...
       Thread.current[:open_stack_token] = token.is_a?(OpenStack::Keystone::Public::Auth::Token) ? token.id : token
     end
 
+    # Get the current authentication token
     def self.token
+      # Trying to be thread safe here...
       Thread.current[:open_stack_token]
     end
 

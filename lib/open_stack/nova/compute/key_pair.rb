@@ -19,6 +19,13 @@ module OpenStack
   module Nova
     module Compute
 
+      # An OpenStack KeyPair
+      #
+      # ==== Attributes
+      # * +name+ - Bridge name for this network
+      # * +public_key+ - Public key
+      # * +private_key+ - Private key (write only)
+      # * +fingerprint+ - The fingerprint for this keypair
       class KeyPair < Base
         self.collection_name = "os-keypairs"
         self.element_name = "keypair"
@@ -30,18 +37,24 @@ module OpenStack
           attribute :fingerprint, :string
         end
 
-        def id
+        def id #:nodoc:
           name
         end
 
+        # The list of keypair with a given name
+        #
+        # ==== Attributes
+        # * +name+ - A keypairs name
         def self.find_all_by_name(name)
           all.reject! { |key_pair| key_pair.name != name }
         end
 
+        # The first keypair with a given name
+        #
+        # ==== Attributes
+        # * +name+ - A keypair name
         def self.find_by_name(name)
-          all.each { |key_pair| return key_pair if key_pair.name == name }
-
-          nil
+          all.detect { |key_pair| key_pair.name == name }
         end
 
       end

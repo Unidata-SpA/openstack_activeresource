@@ -19,6 +19,17 @@ module OpenStack
   module Nova
     module Volume
 
+      # An OpenStack Volume
+      #
+      # ==== Attributes
+      # * +display_name+ - Volume name
+      # * +display_description+ - Volume description
+      # * +volume_type+ - Volume type identifier
+      # * +size+ - Volume size (GBytes)
+      # * +availability_zone+ - The availability zone for the volume
+      # * +created_at+ - Creation date for the volume
+      # * +snapshot_id+ - The snapshot id for the volume (not nil if this volume is a snapshot)
+      # * +status+ - If the volume is a snapshot, this is the status of the snapshot (i.e. available)
       class Volume < Base
         schema do
           attribute :display_name, :string
@@ -28,15 +39,14 @@ module OpenStack
           attribute :availability_zone, :string
           attribute :created_at, :datetime
           attribute :snapshot_id, :string
-          attribute :status, :string
         end
 
         alias_attribute :name, :display_name
 
         validates :display_name, :presence => true, :format => {:with => /\A[\w\.\-]+\Z/}, :length => {:minimum => 2, :maximum => 255}
-        validates :size, :presence => true, :numericality => { :greater_than_or_equal_to => 1, :only_integer => true }
+        validates :size, :presence => true, :numericality => {:greater_than_or_equal_to => 1, :only_integer => true}
 
-        def initialize(attributes = {}, persisted = false)
+        def initialize(attributes = {}, persisted = false) #:notnew:
           attributes = attributes.with_indifferent_access
           new_attributes = {
               :id => attributes[:id],
@@ -54,7 +64,6 @@ module OpenStack
           super(new_attributes, persisted)
         end
 
-
         # True if the image is a snapshot
         def snapshot?
           persisted? and snapshot_id.present?
@@ -65,7 +74,7 @@ module OpenStack
           !attachments.empty?
         end
 
-        # Gets the first server this volume is attached to (if any)
+        # The first server to which this volume is attached to (if any)
         def server
           Compute::Server.find(attachments[0].server_id) if attached?
         end

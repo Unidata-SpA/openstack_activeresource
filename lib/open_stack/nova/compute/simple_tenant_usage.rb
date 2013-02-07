@@ -19,6 +19,13 @@ module OpenStack
   module Nova
     module Compute
 
+      # Server usages for a tenant
+      #
+      # ==== Attributes
+      # * +total_hours+ - Amount of hour the SimpleTenantUsage instance is related to
+      # * +total_vcpus_usage+ - Aggregated virtual cpu usage
+      # * +total_memory_mb_usage+ - Aggregated memory usage (MBytes)
+      # * +total_local_gb_usage+ - Aggregated storage usage (GBytes)
       class SimpleTenantUsage < Base
         self.element_name = "os-simple-tenant-usage"
         self.collection_name = "os-simple-tenant-usage"
@@ -32,7 +39,8 @@ module OpenStack
           attribute :start, :datetime
         end
 
-        def self.find(*arguments)
+        # Redefine the find method to add the detailed flag
+        def self.find(*arguments) #:nodoc:
           scope = arguments.slice!(0)
           options = arguments.slice!(0) || {}
 
@@ -64,18 +72,11 @@ module OpenStack
           end
         end
 
-        def server_usages
-          @attributes[:server_usages].present? ? @attributes[:server_usages] : []
-        end
-
-        def start
-          DateTime.parse(@attributes[:start] + ' UTC')
-        end
-
-        def stop
-          DateTime.parse(@attributes[:stop] + ' UTC')
-        end
-
+        # Find all server usage from a given date to the current one
+        #
+        # ==== Attributes
+        # * +scope+ - ActiveResource scope (:all, :first, :last, :one or an id)
+        # * +from_date+ - Initial date
         def self.find_from_date(scope, from_date)
           now = Time.now.utc
 
@@ -86,6 +87,12 @@ module OpenStack
 
         end
 
+        # Find all server usage between the given dates
+        #
+        # ==== Attributes
+        # * +scope+ - ActiveResource scope (:all, :first, :last, :one or an id)
+        # * +from_date+ - Initial date
+        # * +to_date+ - Final date
         def self.find_between_dates(scope, from_date, to_date)
           find(scope, :params => {
               :start => from_date.utc.strftime(OpenStack::DATETIME_FORMAT),
@@ -94,8 +101,35 @@ module OpenStack
 
         end
 
+        # OpenStack::Nova::Compute::ServerUsage instances
+        def server_usages
+          @attributes[:server_usages].present? ? @attributes[:server_usages] : []
+        end
+
+        # The start date for the ServerUsage set
+        def start
+          DateTime.parse(@attributes[:start] + ' UTC')
+        end
+
+        # The stop date for the ServerUsage set
+        def stop
+          DateTime.parse(@attributes[:stop] + ' UTC')
+        end
+
       end
 
+      # A server usage entry
+      #
+      # ==== Attributes
+      # * +name+ - The name of the server this entry is related
+      # * +vcpus+ - Virtual CPU used by the server in the timespan (+started_at+ - +ended_at+ or +uptime+) for this entry
+      # * +memory_mb+ - Memory (MBytes) used by the server in the timespan (+started_at+ - +ended_at+ or +uptime+) for this entry
+      # * +local_gb+ - The amount of storage used over the uptime ()GBytes)
+      # * +flavor+ - The flavor id used by the server in this server usage entry
+      # * +state+ - Current state for the server in this server usage entry
+      # * +uptime+ - The uptime of this server in seconds
+      # * +hours+ - The uptime of this server in hours
+      # * +tenant_id+ - The tenant id for this server usage entry
       class ServerUsage < Base
 
         schema do
@@ -112,10 +146,12 @@ module OpenStack
           attribute :ended_at, :datetime
         end
 
+        # The initial date for this server usage entry
         def started_at
           DateTime.parse(@attributes[:started_at] + ' UTC')
         end
 
+        # The final date for this server usage entry (can be nil if the server is still alive)
         def ended_at
           return nil if @attributes[:ended_at].blank?
           DateTime.parse(@attributes[:ended_at] + ' UTC')
