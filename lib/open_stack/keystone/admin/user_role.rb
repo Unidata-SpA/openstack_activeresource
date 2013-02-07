@@ -19,9 +19,24 @@ module OpenStack
   module Keystone
     module Admin
 
+      # User Role ("admin view") (\*Warning:* incomplete)
+      #
+      # ==== Attributes
+      # * +name+ - The name of the Role
+      # * +description+ - A description of the role
       class UserRole < Base
         self.element_name = "role"
         self.site = superclass.site + "tenants/:tenant_id/users/:user_id"
+
+        schema do
+          attribute :name, :string
+          attribute :description, :string
+        end
+
+        # Return the associated instance of OpenStack::Keystone::Admin::Role
+        def role
+          OpenStack::Keystone::Admin::Role.find(self.id) if persisted?
+        end
 
       end
 

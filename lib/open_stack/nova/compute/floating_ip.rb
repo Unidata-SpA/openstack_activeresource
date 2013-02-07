@@ -19,6 +19,13 @@ module OpenStack
   module Nova
     module Compute
 
+      # An OpenStack Floating Ip
+      #
+      # ==== Attributes
+      # * +ip+ - Floating IP(v4/v6) address
+      # * +fixed_ip+ - Fixed IP(v4/V6) address
+      # * +pool+ - The id of the pool this IP belongs to
+      # * +instance_id+ - Identifier of server this IPis assigned to (if any)
       class FloatingIp < Base
         self.collection_name = "os-floating-ips"
         self.element_name = "floating_ip"
@@ -30,9 +37,8 @@ module OpenStack
           attribute :instance_id, :string
         end
 
-        # Overload ActiveRecord::encode method
-        # Custom encoding to deal with openstack API
-        def encode(options={})
+        # Overloads ActiveRecord::encode method
+        def encode(options={}) #:nodoc: Custom encoding to deal with openstack API
           to_encode = {}
           # Optional attributes (openstack will not accept empty attribute for update/create)
           to_encode[:pool] = pool if pool.present?
@@ -40,19 +46,32 @@ module OpenStack
           to_encode.send("to_#{self.class.format.extension}", options)
         end
 
+        # List of addresses for a given pool
+        #
+        # ==== Attributes
+        # * +pool+ - an instance of OpenStack::Nova::Compute::FloatingIpPool or a pool id
         def self.find_all_by_pool(pool)
-          all.reject! { |floating_ip| floating_ip.pool != pool }
+          pool_id = pool.is_a?(OpenStack::Nova::Compute::FloatingIpPool) ? pool.id : pool
+          all.reject! { |floating_ip| floating_ip.pool != pool_id }
         end
 
+        # The OpenStack::Nova::Compute::Server instance this address belongs to (if any)
         def instance
-          Server.find(instance_id) if instance_id
+          if instance_id
+            @instance ||= Server.find(instance_id)
+          end
         end
 
-        # Assign the IP to a given server
-        # Params:
-        # ::server:: the server to assign the floating ip to
+        # Assign the IP to a server
+        #
+        # ==== Attributes:
+        # * +server+ - An instance of OpenStack::Nova::Compute::Server (or a server id) to assign the floating IP to
         def assign!(server)
-          server.add_floating_ip(self)
+          server_instance = server.is_a?(OpenStack::Nova::Compute::Server) ? server : Server.find(server)
+          @instance = server_instance
+          self.instance_id = server_instance.id
+
+          server_instance.add_floating_ip(self)
         end
       end
 

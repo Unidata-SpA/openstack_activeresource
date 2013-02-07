@@ -19,7 +19,7 @@ module OpenStack
   module Nova
     module Compute
 
-      class BaseDetail < Base
+      class BaseDetail < Base #:nodoc:
 
         # Overrides ActiveResource::Base::collection_path to add /details to resource path for servers and
         # to remove .<extension>

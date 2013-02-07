@@ -21,6 +21,7 @@ module OpenStack
 
       class Base < OpenStack::Common
 
+        # Get the Nova Compute endpoint assigned to OpenStack::Nova::Compute classes
         def self.site
           if self == OpenStack::Nova::Compute::Base
             Thread.current[:open_stack_nova_compute_site]
@@ -29,6 +30,7 @@ module OpenStack
           end
         end
 
+        # Set the Nova Compute endpoint for OpenStack::Nova::Compute classes
         def self.site=(site)
           super(site)
           Thread.current[:open_stack_nova_compute_site] = @site

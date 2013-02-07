@@ -19,6 +19,7 @@ module OpenStack
   module Keystone
     module Public
 
+      # End user authentication
       class Auth < Base
         self.element_name = "token"
 
@@ -31,7 +32,7 @@ module OpenStack
         validates :username, :presence => true, :unless => Proc.new { token.present? }
         validates :password, :presence => true, :unless => Proc.new { token.present? }
 
-        def initialize(attributes = {}, persisted = false)
+        def initialize(attributes = {}, persisted = false) #:notnew:
           attributes[:username] ||= ""
           attributes[:password] ||= ""
 
@@ -44,9 +45,8 @@ module OpenStack
           super(attributes, persisted)
         end
 
-        # Overload ActiveRecord::encode method
-        # Custom encoding to deal with openstack API
-        def encode(options={})
+        # Overloads ActiveRecord::encode method
+        def encode(options={}) #:nodoc: Custom encoding to deal with openstack API
           to_encode = {}
           if token.present?
             to_encode[:auth] = {
@@ -68,26 +68,33 @@ module OpenStack
           to_encode.send("to_#{self.class.format.extension}", options)
         end
 
-        # Catch some exceptions to perform "remote validation" of this resource
-        def save
+        def save #:nodoc: Catch some exceptions to perform "remote validation" of this resource
           super
         rescue ActiveResource::UnauthorizedAccess
           errors.add :password, I18n.t(:is_invalid)
           return false
         end
 
+        # Returns the service catalog for current authentication
         def service_catalog
           @attributes[:serviceCatalog].is_a?(Array) ? @attributes[:serviceCatalog] : []
         end
 
+        # Returns the OpenStack::Keystone::Public::Auth::Token instance for current authentication
         def token
           @attributes[:token]
         end
 
+        # Returns the token_id (string) for current authentication
         def token_id
           token.id if token.present?
         end
 
+        # Returns the list of endpoint for current authentication and for a given endpoint_type and region
+        #
+        # ==== Attributes
+        # * +endpoint_type+ - The type of endpoint. Currently valid values are: "Compute", "Volume"
+        # * +region+ - Restrict the search to given a region (can be omitted)
         def endpoints_for(endpoint_type, region=nil)
           return [] unless service_catalog.present?
 
@@ -105,18 +112,24 @@ module OpenStack
           endpoints
         end
 
+        # Returns the first endpoint for current authentication and for a given endpoint_type and region
+        #
+        # ==== Attributes
+        # * +endpoint_type+ - The type of endpoint. Currently valid values are: "Compute", "Volume"
+        # * +region+ - Restrict the search to given a region (can be omitted)
         def endpoint_for(endpoint_type, region=nil)
           endpoints_for(endpoint_type, region)[0]
         end
 
       end
 
+      # Authentication Token
       class Auth::Token < Base
         schema do
           attribute :expires, :string
         end
 
-        def initialize(attributes = {}, persisted = false)
+        def initialize(attributes = {}, persisted = false) #:notnew:
           attributes = attributes.with_indifferent_access
           new_attributes = {
               :id => attributes[:id],
@@ -126,10 +139,12 @@ module OpenStack
           super(new_attributes, persisted)
         end
 
+        # Expiration date and time for this token
         def expires_at
           DateTime.strptime(attributes[:expires], OpenStack::DATETIME_FORMAT)
         end
 
+        # True if the token is expired
         def expired?
           DateTime.strptime(attributes[:expires], OpenStack::DATETIME_FORMAT) < DateTime.now.utc
         end

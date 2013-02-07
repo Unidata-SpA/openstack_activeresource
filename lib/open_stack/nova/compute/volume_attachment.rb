@@ -19,6 +19,10 @@ module OpenStack
   module Nova
     module Compute
 
+      # A Volume attachment (this class describes an attachment of a volume to a server)
+      #
+      # ==== Attributes
+      # * +device+ - The volume (unique) name (e.g. /dev/vdc)
       class VolumeAttachment < Base
         self.element_name = "volumeAttachment"
         self.collection_name = "os-volume_attachments"
@@ -34,7 +38,7 @@ module OpenStack
         validates :volume, :presence => true
         validates :server, :presence => true
 
-        def initialize(attributes = {}, persisted = false)
+        def initialize(attributes = {}, persisted = false) #:notnew:
           attributes = attributes.with_indifferent_access
           new_attributes = {
               :device => attributes[:device],
@@ -59,9 +63,9 @@ module OpenStack
           new_attachment
         end
 
-        # Overload ActiveRecord::encode method
-        # Custom encoding to deal with openstack API
-        def encode(options={})
+        # Overloads ActiveRecord::encode method
+        def encode(options={}) #:nodoc:
+          # Custom encoding to deal with openstack API
           to_encode = {
               VolumeAttachment.element_name => {
                   :device => device,
@@ -72,20 +76,30 @@ module OpenStack
           to_encode.send("to_#{self.class.format.extension}", options)
         end
 
+        # Return the server to which this volume_attachment is related (if any)
         def server
           Server.find(server_id) if server_id.present?
         end
 
+        # Bind the volume_attachment to a sever
+        #
+        # ==== Attributes
+        # * +server+ - an OpenStack::Nova::Compute::Server instance
         def server=(server)
-          @attributes[:server_id] = server.id unless !persisted?
+          @attributes[:server_id] = server.id if !persisted?
         end
 
+        # Return the volume to which this volume_attachment is related (if any)
         def volume
           Volume::Volume.find(volume_id) if volume_id.present?
         end
 
+        # Bind the volume_attachment to a volume
+        #
+        # ==== Attributes
+        # * +volume+ - an OpenStack::Nova::Compute::Volume instance
         def volume=(volume)
-          @attributes[:volume_id] = volume.id unless !persisted?
+          @attributes[:volume_id] = volume.id if !persisted?
         end
 
       end

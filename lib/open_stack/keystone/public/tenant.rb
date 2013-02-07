@@ -19,6 +19,12 @@ module OpenStack
   module Keystone
     module Public
 
+      # An OpenStack Tenant ("public view")
+      #
+      # ==== Attributes
+      # * +name+ - The name of the tenant
+      # * +description+ - A description of the tenant
+      # * +enabled+ - True if the tenant is enabled
       class Tenant < Base
 
         schema do
@@ -28,7 +34,7 @@ module OpenStack
 
         end
 
-        def self.find_every(options)
+        def self.find_every(options) #:nodoc:
           class_name = self.name.split('::').last.downcase
           begin
             case from = options[:from]
@@ -49,12 +55,20 @@ module OpenStack
           end
         end
 
+        # List of tenants with a given name (accessible by the current authenticated user...)
+        #
+        # ==== Attributes
+        # * +name+ - A string
         def self.find_by_name(name)
-          self.all.each { |tenant| return tenant if tenant.name == name }
+          all.detect { |tenant| tenant.name == name }
         end
 
+        # The first tenant with a given name (accessible by the current authenticated user...)
+        #
+        # ==== Attributes
+        # * +name+ - A string
         def self.find_all_by_name(name)
-          self.all.reject! { |tenant| tenant.name != name }
+          all.reject! { |tenant| tenant.name != name }
         end
 
       end
