@@ -19,6 +19,12 @@ module OpenStack
   module Keystone
     module Admin
 
+      # An OpenStack Tenant ("admin view")
+      #
+      # ==== Attributes
+      # * +name+ - The name of this tenant
+      # * +description+ - A description of this tenant
+      # * +enabled+ - True if this tenant is enabled
       class Tenant < Base
 
         schema do
@@ -31,7 +37,13 @@ module OpenStack
         validates :name, :format => {:with => /\A\w[\w\s]+\w\Z/}
         validates :description, :format => {:with => /\A[\w\s\.\-:@+,'"]+\Z/}
 
-        def self.find_every(options)
+        def initialize(params = {}, persisted = false) #:notnew:
+          super(params, persisted)
+
+          self.description = description
+        end
+
+        def self.find_every(options) #:nodoc:
           class_name = self.name.split('::').last.downcase
           begin
             case from = options[:from]
@@ -52,29 +64,46 @@ module OpenStack
           end
         end
 
+        # List of tenant with a given name
+        #
+        # ==== Attributes
+        # * +name+ - A string
         def self.find_by_name(name)
           all.detect { |x| x.name == name }
         end
 
-        def initialize(params = {}, persisted = false)
-          super(params, persisted)
-
-          self.description = description
-        end
-
-
+        # List of Users (instances of OpenStack::Keystone::Admin::User) in this tenant
+        #
+        # ==== Attributes
+        # * +scope+ - An ActiveResource scope (defaults to :all)
         def users(scope = :all)
           User.find(scope, :params => {:tenant_id => self.id})
         end
 
+        # Returns the instance of OpenStack::Keystone::Admin::User with the given id
+        #
+        # ==== Attributes
+        # * +id+ - A string
         def user(id)
           users(id)
         end
 
+        # List if roles in this tenant for a given instance of OpenStack::Keystone::Admin::User or user id
+        #
+        # ==== Attributes
+        # * +user+ - A string
+        # * +scope+ - An ActiveResource scope (defaults to :all)
         def user_roles(user, scope = :all)
-          Role.find(scope, :params => {:tenant_id => self.id, :user_id => user.is_a?(User) ? user.id : user})
+          user_id = user.is_a?(OpenStack::Keystone::Admin::User) ? user.id : user
+
+          Role.find(scope, :params => {:tenant_id => self.id, :user_id => user_id})
         end
 
+        # Adds a role to a user in this tenant
+        #
+        # ==== Attributes
+        # * +role+ - Instance of OpenStack::Keystone::Admin::Role or a role id
+        # * +user+ - Instance of OpenStack::Keystone::Admin::User or a user id
         def add_role_to_user(role, user)
           role_id = role.is_a?(OpenStack::Keystone::Admin::Role) ? role.id : role
           user_id = user.is_a?(OpenStack::Keystone::Admin::User) ? user.id : user
@@ -82,6 +111,11 @@ module OpenStack
           put("users/#{user_id}/roles/OS-KSADM/#{role_id}", {}, "null")
         end
 
+        # Removes a role to a user in this tenant
+        #
+        # ==== Attributes
+        # * +role+ - Instance of OpenStack::Keystone::Admin::Role or a role id
+        # * +user+ - Instance of OpenStack::Keystone::Admin::User or a user id
         def delete_role_from_user(role, user)
           role_id = role.is_a?(OpenStack::Keystone::Admin::Role) ? role.id : role
           user_id = user.is_a?(OpenStack::Keystone::Admin::User) ? user.id : user
@@ -89,10 +123,7 @@ module OpenStack
           delete("users/#{user_id}/roles/OS-KSADM/#{role_id}")
         end
 
-        def role(user)
-          users(user)
-        end
-
+        # Returns a filtered description for this tenant
         def description=(description)
           @attributes[:description] = description.gsub /[^\w\s\.\-:@+,'"]/, '_' if description
 

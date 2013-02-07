@@ -19,13 +19,20 @@ module OpenStack
   module Keystone
     module Admin
 
+      # An OpenStack Role ("admin view")
+      #
+      # ==== Attributes
+      # * +name+ - The name of this role
       class Role < Base
         self.element_name = "OS-KSADM/role"
 
-        def self.find_by_name(name)
-          all.each { |role| return role if role.name == name }
+        schema do
+          attribute :name, :string
+        end
 
-          nil
+        # List Roles with a given name
+        def self.find_by_name(name)
+          all.detect { |role| role.name == name }
         end
 
       end

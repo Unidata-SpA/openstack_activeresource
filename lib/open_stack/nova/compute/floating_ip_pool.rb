@@ -19,6 +19,11 @@ module OpenStack
   module Nova
     module Compute
 
+      # An OpenStack Floating Ip Pool
+      #
+      # ==== Attributes
+      # * +id+ - Id of the pool
+      # * +name+ - Name of the pool
       class FloatingIpPool < Base
         self.collection_name = "os-floating-ip-pools"
         self.element_name = "floating_ip_pool"

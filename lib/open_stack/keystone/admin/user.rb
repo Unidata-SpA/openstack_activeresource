@@ -19,6 +19,14 @@ module OpenStack
   module Keystone
     module Admin
 
+      # An OpenStack User ("admin view")
+      #
+      # ==== Attributes
+      # * +name+ - The name of this user
+      # * +password+ - Password (possibly encrypted) of this user
+      # * +email+ - E-mail address of this user
+      # * +enabled+ - True if this user is enabled
+      # * +tenant_id+ - Default (i.e. primary) tenant for this user
       class User < Base
 
         schema do
@@ -37,7 +45,7 @@ module OpenStack
         validates_format_of :email, :with => /\A[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,4}\Z/i
         validates :enabled, :presence => true, :inclusion => {:in => [true, false]}
 
-        def initialize(attributes = {}, persisted = false)
+        def initialize(attributes = {}, persisted = false) #:notnew:
           attributes = attributes.with_indifferent_access
 
           if attributes[:tenant].present?
@@ -51,9 +59,8 @@ module OpenStack
           super(attributes, persisted)
         end
 
-        # Overload ActiveRecord::encode method
-        # Custom encoding to deal with openstack API
-        def encode(options={})
+        # Overloads ActiveRecord::encode method
+        def encode(options={}) #:nodoc: Custom encoding to deal with openstack API
           to_encode = {
               :user => {
                   :name => name,
@@ -68,12 +75,21 @@ module OpenStack
           to_encode.send("to_#{self.class.format.extension}", options)
         end
 
+        # List of users in a given tenant
+        #
+        # ==== Attributes
+        # * +tenant+ - An instance of OpenStack::Keystone::Admin::Tenant or a tenant id
         def self.all_by_tenant(tenant)
           tenant_id = tenant.is_a?(OpenStack::Keystone::Admin::Tenant) ? tenant.id : tenant
 
           all.select { |user| user.tenant_id == tenant_id }
         end
 
+        # Find a user in a given tenant
+        #
+        # ==== Attributes
+        # * +id+ - The user id
+        # * +tenant+ - An instance of OpenStack::Keystone::Admin::Tenant or a tenant id
         def self.find_by_tenant(id, tenant)
           tenant_id = tenant.is_a?(OpenStack::Keystone::Admin::Tenant) ? tenant.id : tenant
 
@@ -81,17 +97,28 @@ module OpenStack
           user.tenant_id == tenant_id ? user : nil
         end
 
+        # List of user with a given name
+        #
+        # ==== Attributes
+        # * +name+ - A string
         def self.find_by_name(name)
           all.detect { |user| user.name == name }
         end
-        
+
+        # The primary (default) tenant (i.e. an instance of OpenStack::Keystone::Admin::Tenant) associated with this user
         def tenant
           OpenStack::Keystone::Admin::Tenant.find tenant_id
         end
 
+        # File role(s) (i.e. instances of OpenStack::Keystone::Admin::UserRole) for this user in a given tenant
+        #
+        # ==== Attributes
+        # * +scope+ - The ActiveResource scope (defaults to :all)
+        # * +tenant+ - An optional instance of OpenStack::Keystone::Admin::Tenant (or a tenant id). Defaults to the primary tenant for this user
         def roles(scope = :all, tenant = nil)
           tenant_id = tenant.is_a?(OpenStack::Keystone::Admin::Tenant) ? tenant.id : (tenant || self.tenant_id)
-          OpenStack::Keystone::Admin::UserRole.find(scope, :params => { :tenant_id => tenant_id, :user_id => self.id })
+
+          OpenStack::Keystone::Admin::UserRole.find(scope, :params => {:tenant_id => tenant_id, :user_id => self.id})
         end
 
       end

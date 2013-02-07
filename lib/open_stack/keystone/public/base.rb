@@ -21,6 +21,7 @@ module OpenStack
 
       class Base < OpenStack::Common
 
+        # Get the Keystone endpoint assigned to OpenStack::Keystone::Public classes
         def self.site
           if self == OpenStack::Keystone::Public::Base
             Thread.current[:open_stack_keystone_public_site]
@@ -29,6 +30,7 @@ module OpenStack
           end
         end
 
+        # Set the Keystone endpoint assigned to OpenStack::Keystone::Public classes
         def self.site=(site)
           super(site)
           Thread.current[:open_stack_keystone_public_site] = @site

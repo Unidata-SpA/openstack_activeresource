@@ -19,6 +19,16 @@ module OpenStack
   module Nova
     module Compute
 
+      # An OpenStack Network (\*WARNING:* incomplete)
+      #
+      # ==== Attributes
+      # * +bridge+ - Bridge name for this network
+      # * +bridge_interface+ - Interface for this network
+      # * +cidr+ - CIDR used by this network
+      # * +label+ - Label for this network
+      # * +multi_host+ - True if this network is managed by more than one controller (false otherwise)
+      # * +vlan+ - Vlan ID (802.1q) used by this network
+      # * +project_id+ - Tenant id associated with this network (if any)
       class Network < Base
         self.collection_name = "os-networks"
 

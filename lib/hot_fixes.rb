@@ -17,8 +17,9 @@
 
 # Reopens ActiveResource::Base to fix "ActiveResource nested resources not being persisted"
 # See https://github.com/rails/rails/pull/3107
-module ActiveResource
+module ActiveResource #:nodoc:
   class Base
+
     def load(attributes, remove_root = false)
       raise ArgumentError, "expected an attributes Hash, got #{attributes.inspect}" unless attributes.is_a?(Hash)
       @prefix_options, attributes = split_options(attributes)
@@ -49,7 +50,9 @@ module ActiveResource
                 value.duplicable? ? value.dup : value
             end
       end
+
       self
     end
+
   end
 end

@@ -19,6 +19,12 @@ module OpenStack
   module Nova
     module Compute
 
+      # An OpenStack Security Group
+      #
+      # ==== Attributes
+      # * +tenant_id+ - Tenant id for this security group
+      # * +name+ - Name of this security group
+      # * +description+ - Description of this security group
       class SecurityGroup < Base
         self.element_name = "security_group"
         self.collection_name = "os-security-groups"
@@ -34,6 +40,14 @@ module OpenStack
 
       end
 
+      # An OpenStack Security Group Rule
+      #
+      # ==== Attributes
+      # * +ip_protocol+ - Protocol: tcp, udp or icmp
+      # * +from_port+ - Initial port
+      # * +to_port+ - Final port
+      # * +parent_group_id+ - The security group this rule belongs to
+      # * +cidr+ - A cidr
       class SecurityGroup::Rule < Base
         self.element_name = "security_group_rule"
         self.collection_name = "os-security-group-rules"
@@ -60,7 +74,7 @@ module OpenStack
         validates_numericality_of :to_port, :greater_than_or_equal_to => :from_port, :if => Proc.new { |rule| rule.udp? or rule.tcp? }
 
 
-        def initialize(attributes = {}, persisted = false)
+        def initialize(attributes = {}, persisted = false) #:notnew:
           attributes = attributes.with_indifferent_access
           new_attributes = {
               :id => attributes[:id],
@@ -74,8 +88,7 @@ module OpenStack
         end
 
         # Override ActiveRecord::encode method
-        # Custom encoding to deal with openstack API
-        def encode(options={})
+        def encode(options={}) #:nodoc: Custom encoding to deal with openstack API
           to_encode = {
               :security_group_rule => {
                   :ip_protocol => ip_protocol,
@@ -88,23 +101,35 @@ module OpenStack
           to_encode.send("to_#{self.class.format.extension}", options)
         end
 
+        # Set the parent security group (if the rule is not persisted)
+        #
+        # ==== Attributes
+        # * +group+: An instance of OpenStack::Nova::Compute::SecurityGroup or a security group id
         def parent_group=(group)
-          parent_group_id = group.id
+          unless persisted?
+            @parent_group = nil
+            self.parent_group_id = group.is_a?(OpenStack::Nova::Compute::SecurityGroup) ? group.id : group
+          end
         end
 
+        # Parent group for this rule
         def parent_group
-          return nil if parent_group_id.nil?
-          SecurityGroup.find(parent_group_id)
+          unless parent_group_id.nil?
+            @parent_group ||= SecurityGroup.find(parent_group_id)
+          end
         end
 
+        # True if this rule refers to ICMP
         def icmp?
           ip_protocol == 'icmp'
         end
 
+        # True if this rule refers to UDP
         def udp?
           ip_protocol == 'udp'
         end
 
+        # True if this rule refers to TCP
         def tcp?
           ip_protocol == 'tcp'
         end

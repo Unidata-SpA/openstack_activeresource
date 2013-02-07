@@ -19,7 +19,17 @@ module OpenStack
   module Nova
     module Compute
 
+      # An OpenStack Floating Ip
+      #
+      # ==== Attributes
+      # * +name+ - The name of the flavor
+      # * +ram+ - Amount of RAM (MBytes)
+      # * +disk+ - Amount of storage (GBytes)
+      # * +vcpus+ - Virtual CPUs
+      # * +rxtx_factor+ - Traffic shaping (?)
+      # * +ephemeral_disk+ - Ephemeral storage amount (GByte)
       class Flavor < BaseDetail
+
         schema do
           attribute :name, :string
           attribute :ram, :integer
@@ -35,37 +45,55 @@ module OpenStack
         validates :disk, :presence => true, :numericality => {:greater_than_or_equal_to => 10, :only_integer => true}
         validates :ephemeral_disk, :presence => false, :numericality => {:greater_than_or_equal_to => 10, :only_integer => true}
 
+        # Returns a list of Flavor for a given name
+        #
+        # ==== Attributes
+        # * +name+ - A string
         def self.find_all_by_name(name)
           all.reject { |flavor| flavor.name != name }
         end
 
+        # Returns the first Flavor for a given name
+        #
+        # ==== Attributes
+        # * +name+ - A string
         def self.find_by_name(name)
-          all.each { |flavor| return flavor if flavor.name == name }
-
-          nil
+          all.detect { |flavor| flavor.name == name }
         end
 
+        # Returns a list of Flavor that can be used with the given constraints
+        #
+        # ==== Attributes
+        # * +constraints+ - Hash of constraints. Valid keys are: :ram, :vcpus, :disk
         def self.find_by_constraints(constraints = {})
           constraints = constraints.with_indifferent_access
-          constraints[:ram]   ||= -1.0/0.0
+          constraints[:ram] ||= -1.0/0.0
           constraints[:vcpus] ||= -1.0/0.0
-          constraints[:disk]  ||= -1.0/0.0
+          constraints[:disk] ||= -1.0/0.0
 
           all.select { |flavor| flavor.ram >= constraints[:ram] and flavor.vcpus >= constraints[:vcpus] and flavor.disk >= constraints[:disk] }
         end
 
+        # Returns a list of Flavor that can be used with the given Image
+        #
+        # ==== Attributes
+        # * +image+ - An OpenStack::Nova::Compute::Image instance or an Image id
         def self.applicable_for_image(image)
+          image_instance = image.is_a?(OpenStack::Nova::Compute::Image) ? image : Image.find(image)
+
           constraints = {}
-          constraints[:ram]   = image.min_ram if image.min_ram > 0
-          constraints[:disk]  = image.min_disk if image.min_disk > 0
+          constraints[:ram] = image.min_ram if image_instance.min_ram > 0
+          constraints[:disk] = image.min_disk if image_instance.min_disk > 0
 
           find_by_constraints constraints
         end
 
+        # Returns the amount of ephemeral disk
         def ephemeral_disk
           @attributes[:'OS-FLV-EXT-DATA:ephemeral'] || nil
         end
 
+        # Returns a human-friendly description for this Flavor
         def description
           "#{vcpus} vCPU - #{ram} MB RAM - #{disk} GB Disk"
         end

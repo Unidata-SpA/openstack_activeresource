@@ -19,6 +19,21 @@ module OpenStack
   module Nova
     module Compute
 
+      # An OpenStack Server
+      #
+      # ==== Attributes
+      # * +name+ - The name of the server
+      # * +status+ - Status of the server (see http://docs.openstack.org/api/openstack-compute/2/content/List_Servers-d1e2078.html)
+      # * +vm_state+ - Extended Instance Status
+      # * +task+ - If not +nil+, contains the task OpenStack is preforming on this server
+      # * +power_state+ - Server power state (0|1)
+      # * +tenant_id+ - Identifier of the tenant this server belongs to
+      # * +user_id+ - Identifier of the user that created this server
+      # * +image_id+ - Identifier of the image used to create this server
+      # * +flavor_id+ - Identifier of the flavor used to create this server
+      # * +key_pair_id+ - Identifier of the keypair used by this server
+      # * +updated_at+ - Last modification timestamp
+      # * +created_at+ - Creation timestamp
       class Server < BaseDetail
 
         schema do
@@ -41,13 +56,20 @@ module OpenStack
         validates :image, :presence => true
         validates :flavor, :presence => true
 
+        # Return the list of server for a given tenant
+        #
+        # ==== Attributes
+        # * +tenant+ - an OpenStack::Keystone::Admin::Tenant instance (or a tenant id)
+        #
+        # ==== Notes
+        # This method require an admin access
         def self.all_by_tenant(tenant)
           tenant_id = tenant.is_a?(OpenStack::Keystone::Admin::Tenant) ? tenant.id : tenant
 
           find(:all, :params => {:tenant_id => tenant_id})
         end
 
-        def initialize(attributes = {}, persisted = false)
+        def initialize(attributes = {}, persisted = false) # :notnew:
           attributes = attributes.with_indifferent_access
           new_attributes = {
               :id => attributes[:id],
@@ -99,9 +121,9 @@ module OpenStack
           self
         end
 
-        # Overload ActiveRecord::encode method
-        # Custom encoding to deal with openstack API
-        def encode(options={})
+        # Overloads ActiveRecord::encode method
+        def encode(options={}) #:nodoc:
+                               # Custom encoding to deal with openstack API
           to_encode = {
               :server => {
                   :name => name,
@@ -118,32 +140,61 @@ module OpenStack
           to_encode.send("to_#{self.class.format.extension}", options)
         end
 
-        # Accessors
-
+        # The instance of OpenStack::Nova::Compute::Image used for this server
         def image
-          Image.find(image_id) if image_id.present?
+          if image_id.present?
+            @image ||= Image.find(image_id)
+          end
         end
 
+        # Set the image for this server (if the server is not persisted)
+        #
+        # ==== Attributes
+        # * +image+ - An instance of OpenStack::Nova::Compute::Image or an image id
         def image=(image)
-          self.image_id = image.id
+          unless persisted?
+            @image = nil # nullify @@image because the image id is changed
+            self.image_id = image.is_a?(OpenStack::Nova::Compute::Image) ? image.id : image
+          end
         end
 
+        # The instance of OpenStack::Nova::Compute::Flavor used for this server
         def flavor
-          Flavor.find(flavor_id) if flavor_id.present?
+          if flavor_id.present?
+            @flavor ||= Flavor.find(flavor_id)
+          end
         end
 
+        # Set the flavor for this server (if the server is not persisted)
+        #
+        # ==== Attributes
+        # * +flavor+ - An instance of OpenStack::Nova::Compute::Flavor or a flavor id
         def flavor=(flavor)
-          self.flavor_id = flavor.id
+          unless persisted?
+            @flavor = nil # nullify @flavor because the flavor id is changed
+            self.flavor_id = flavor.is_a?(OpenStack::Nova::Compute::Flavor) ? flavor.id : flavor
+          end
         end
 
+        # The instance of OpenStack::Nova::Compute::KeyPair used for this server (if any)
         def key_pair
-          KeyPair.find(key_pair_id) if key_pair_id.present?
+          if key_pair_id.present?
+            @keypair ||= KeyPair.find(key_pair_id)
+          end
         end
 
+        # Set the keypair for this server (if the server is not persisted)
+        #
+        # ==== Attributes
+        # * +key_pair+ - An instance of OpenStack::Nova::Compute::KeyPair or a key-pair id
         def key_pair=(key_pair)
-          self.key_pair_id = key_pair.name
+          unless persisted?
+            @keypair = nil # nullify @@keypair because the keypair id is changed
+            self.key_pair_id = key_pair.id
+          end
         end
 
+        # The array of OpenStack::Nova::Compute::SecurityGroup instances associated with this server
         def security_groups
           if persisted?
             get('os-security-groups').map { |sg| OpenStack::Nova::Compute::SecurityGroup.new(sg, true) }
@@ -152,14 +203,19 @@ module OpenStack
           end
         end
 
+        # Set security groups for this server
+        #
+        # ==== Attributes
+        # * +security_groups+ - Array of OpenStack::Nova::Compute::SecurityGroup instances
         def security_groups=(security_groups)
           return if persisted? # Do Nothing (it's a read-only attribute for OpenStack)
 
-          security_group_ids = security_groups.map { |sg| sg.id }
+          self.security_group_ids = security_groups.map { |sg| sg.id }
 
           security_groups
         end
 
+        # Addresses hash associated to this server
         def addresses
           addresses = {}
           if persisted?
@@ -171,34 +227,50 @@ module OpenStack
           addresses
         end
 
-        def addresses=(something)
-          # Do Nothing (it's a read-only attribute for OpenStack)
+        def addresses=(something) # :nodoc: do Nothing (it's a read-only attribute for OpenStack)
+
         end
 
+        # The OpenStack::Nova::Compute::VolumeAttachment(s) for this server
+        #
+        # ==== Attributes
+        # * +scope+ - An ActiveResource find scope (default: :all)
         def volume_attachments(scope = :all)
           VolumeAttachment.find(scope, :params => {:server_id => self.id})
         end
 
-        # Misc...
-
-        # Return the list of attached volumes
+        # Array of OpenStack::Nova::Compute::Volume attached to this server
         def attached_volumes
           volume_attachments.present? ? volume_attachments.map { |va| va.volume } : []
         end
 
         # Attach a volume
+        #
+        # ==== Attributes
+        # * +volume+ - An OpenStack::Nova::Compute::Volume instance
+        # * +device_name+ - Name the device (from server perspective) (e.g. "/dev/vdc")
         def attach_volume!(volume, device_name)
           VolumeAttachment.create(:volume => volume, :device => device_name, :server => self)
         end
 
         # Refresh server status
+        # This method updates the following attributes:
+        #  * progress
+        #  * status
+        #  * task
+        #  * power_state
+        #  * vm_state
         def refresh_status!
-          updated = Server.find(self.id)
-          self.progress = updated.progress
-          self.status = updated.status
-          self.task = updated.task
+          if persisted?
+            updated = Server.find(self.id)
+            self.progress = updated.progress
+            self.status = updated.status
+            self.task = updated.task
+            self.power_state = updated.power_state
+            self.vm_state = updated.vm_state
 
-          self
+            self
+          end
         end
 
         SERVER_STATUSES = {
@@ -220,7 +292,7 @@ module OpenStack
             :VERIFY_RESIZE => I18n.t(:awaiting_verification, :scope => [:openstack, :status])
         }.with_indifferent_access
 
-        # Returns an extended description for the server status
+        # Returns an extended (and localized) description for the server status
         def status_description
           SERVER_STATUSES[status]
         end
@@ -230,42 +302,45 @@ module OpenStack
           I18n.t(task, :scope => [:openstack, :tasks]) if task.present?
         end
 
-        ## Actions
-
-        # Assign a floating IP to the server.
-        # Params:
-        # +floating_ip+:: a FloatingIP to be attached to the server.
+        # Assign a floating IP to the server
+        #
+        # ==== Attributes
+        # * +floating_ip+ - a FloatingIP to be attached to the server.
         def add_floating_ip(floating_ip)
           post(:action, {}, {:addFloatingIp => {:address => floating_ip.ip}}.to_json)
         end
 
-        # Reboot the server.
-        # Params:
-        # +type+:: type of reboot. Should be 'hard' or 'soft' (defaults to 'hard', may be nil)
+        # Reboot the server
+        #
+        # ==== Attributes
+        # * +type+ - type of reboot. Should be 'hard' or 'soft' (defaults to 'hard', may be nil)
         def reboot(type=:hard)
           post(:action, {}, {:reboot => {:type => type}}.to_json)
         end
 
-        # Creates a new snapshot of server.
-        # Params:
-        # +name+:: name of the new snapshot image
-        # +metadata+::  hash of metadata (may be nil)
+        # Creates a new snapshot of server
+        #
+        # ==== Attributes
+        # * +name+ - name of the new snapshot image
+        # * +metadata+ -  hash of metadata (may be nil)
         def create_new_image(name, metadata={})
           post(:action, {}, {:createImage => {:name => name, :metadata => metadata}}.to_json)
         end
 
-        # Gets the output from the console log for a server.
-        # Params:
-        # +length+:: numbers of lines to get (defaults to 50, may be nil)
+        # Gets the output from the console log for a server
+        #
+        # ==== Attributes
+        # * +length+ - numbers of lines to get (defaults to 50, may be nil)
         def console_output(length=50)
           response = post(:action, {}, {:'os-getConsoleOutput' => {:length => length}}.to_json)
 
           ActiveSupport::JSON.decode(response.body)['output']
         end
 
-        # Accesses a VNC console for a specific server.
-        # Params:
-        # +length+:: numbers of lines to get (defaults to 50, may be nil)
+        # Accesses a VNC console for a specific server
+        #
+        # ==== Attributes
+        # * +length+ - numbers of lines to get (defaults to 50, may be nil)
         def vnc_console(type='novnc')
           response = post(:action, {}, {:'os-getVNCConsole' => {:type => type}}.to_json)
 
