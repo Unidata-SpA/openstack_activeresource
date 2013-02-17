@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "openstack_activeresource"
-  s.version = "0.3.0"
+  s.version = "0.3.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Davide Guerri"]
-  s.date = "2013-02-07"
+  s.date = "2013-02-17"
   s.description = "OpenStack Ruby and RoR bindings implemented with ActiveResource - See also http://www.unicloud.it"
   s.email = "d.guerri@rd.unidata.it"
   s.extra_rdoc_files = [
@@ -85,6 +85,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_runtime_dependency(%q<jeweler>, ["~> 1.8.4"])
       s.add_runtime_dependency(%q<simplecov>, [">= 0"])
+      s.add_runtime_dependency(%q<json>, ["~> 1.7.7"])
     else
       s.add_dependency(%q<activemodel>, ["~> 3.2.6"])
       s.add_dependency(%q<activeresource>, ["~> 3.2.6"])
@@ -94,6 +95,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
       s.add_dependency(%q<simplecov>, [">= 0"])
+      s.add_dependency(%q<json>, ["~> 1.7.7"])
     end
   else
     s.add_dependency(%q<activemodel>, ["~> 3.2.6"])
@@ -104,6 +106,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
     s.add_dependency(%q<simplecov>, [">= 0"])
+    s.add_dependency(%q<json>, ["~> 1.7.7"])
   end
 end
 
