@@ -39,11 +39,22 @@ module OpenStack
           attribute :ephemeral_disk, :integer
         end
 
-        validates :name, :presence => true, :format => {:with => /\A[\w\.\-]+\Z/}, :length => {:minimum => 2, :maximum => 255}
-        validates :ram, :presence => true, :numericality => {:greater_than_or_equal_to => 1, :only_integer => true}
-        validates :vcpus, :presence => true, :numericality => {:greater_than_or_equal_to => 1, :only_integer => true}
-        validates :disk, :presence => true, :numericality => {:greater_than_or_equal_to => 10, :only_integer => true}
-        validates :ephemeral_disk, :presence => false, :numericality => {:greater_than_or_equal_to => 10, :only_integer => true}
+        validates :name,
+                  :presence => true,
+                  :format => {:with => /\A[\w\.\-]+\Z/, :allow_blank => true},
+                  :length => {:minimum => 2, :maximum => 255, :allow_blank => true}
+        validates :ram,
+                  :presence => true,
+                  :numericality => {:greater_than_or_equal_to => 1, :only_integer => true, :allow_blank => true}
+        validates :vcpus,
+                  :presence => true,
+                  :numericality => {:greater_than_or_equal_to => 1, :only_integer => true, :allow_blank => true}
+        validates :disk,
+                  :presence => true,
+                  :numericality => {:greater_than_or_equal_to => 10, :only_integer => true, :allow_blank => true}
+        validates :ephemeral_disk,
+                  :presence => false,
+                  :numericality => {:greater_than_or_equal_to => 10, :only_integer => true}
 
         # Returns a list of Flavor for a given name
         #

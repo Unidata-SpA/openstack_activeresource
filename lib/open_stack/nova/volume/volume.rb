@@ -43,8 +43,13 @@ module OpenStack
 
         alias_attribute :name, :display_name
 
-        validates :display_name, :presence => true, :format => {:with => /\A[\w\.\-]+\Z/}, :length => {:minimum => 2, :maximum => 255}
-        validates :size, :presence => true, :numericality => {:greater_than_or_equal_to => 1, :only_integer => true}
+        validates :display_name,
+                  :presence => true,
+                  :format => {:with => /\A[\w\.\-]+\Z/, :allow_blank => true},
+                  :length => {:minimum => 2, :maximum => 255, :allow_blank => true}
+        validates :size,
+                  :presence => true,
+                  :numericality => {:greater_than_or_equal_to => 1, :only_integer => true, :allow_blank => true}
 
         def initialize(attributes = {}, persisted = false) #:notnew:
           attributes = attributes.with_indifferent_access

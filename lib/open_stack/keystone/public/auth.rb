@@ -29,8 +29,12 @@ module OpenStack
           attribute :tenant_id, :string
         end
 
-        validates :username, :presence => true, :unless => Proc.new { token.present? }
-        validates :password, :presence => true, :unless => Proc.new { token.present? }
+        validates :username,
+                  :presence => true,
+                  :unless => Proc.new { token.present? }
+        validates :password,
+                  :presence => true,
+                  :unless => Proc.new { token.present? }
 
         def initialize(attributes = {}, persisted = false) #:notnew:
           attributes[:username] ||= ""
