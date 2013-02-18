@@ -37,13 +37,20 @@ module OpenStack
           attribute :tenant_id, :string
         end
 
-        validates :name, :presence => true
-        validates_length_of :name, :minimum => 4
-        validates_format_of :name, :with => /\A[0-9a-z_]+\Z/i
-        validates_format_of :password, :with => /(?=.*[\d\W])/, :message => :must_contain_at_least_one_digit_or_one_special_character
-        validates_length_of :password, :minimum => 8
-        validates_format_of :email, :with => /\A[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,4}\Z/i
-        validates :enabled, :presence => true, :inclusion => {:in => [true, false]}
+        validates :name,
+                  :presence => true,
+                  :length => {:minimum => 4, :allow_blank => true},
+                  :format => {:with => /\A[0-9a-z_]+\Z/i, :allow_blank => true}
+        validates :password,
+                  :presence => true,
+                  :format => {:with => /(?=.*[\d\W])/, :message => :must_contain_at_least_one_digit_or_one_special_character, :allow_blank => true},
+                  :length => {:minimum => 8, :allow_blank => true}
+        validates :email,
+                  :presence => true,
+                  :formate => {:with => /\A[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,4}\Z/i, :allow_blank => true}
+        validates :enabled,
+                  :presence => true,
+                  :inclusion => {:in => [true, false], :allow_blank => true}
 
         def initialize(attributes = {}, persisted = false) #:notnew:
           attributes = attributes.with_indifferent_access

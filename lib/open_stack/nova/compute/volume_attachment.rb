@@ -34,9 +34,13 @@ module OpenStack
           attribute :server_id, :string
         end
 
-        validates :device, :presence => true, :format => {:with => /\A[\/\\a-zA-Z0-9]+\Z/}
-        validates :volume, :presence => true
-        validates :server, :presence => true
+        validates :device,
+                  :presence => true,
+                  :format => {:with => /\A[\/\\a-zA-Z0-9]+\Z/, :allow_blank => true}
+        validates :volume,
+                  :presence => true
+        validates :server,
+                  :presence => true
 
         def initialize(attributes = {}, persisted = false) #:notnew:
           attributes = attributes.with_indifferent_access
@@ -65,7 +69,7 @@ module OpenStack
 
         # Overloads ActiveRecord::encode method
         def encode(options={}) #:nodoc:
-          # Custom encoding to deal with openstack API
+                               # Custom encoding to deal with openstack API
           to_encode = {
               VolumeAttachment.element_name => {
                   :device => device,

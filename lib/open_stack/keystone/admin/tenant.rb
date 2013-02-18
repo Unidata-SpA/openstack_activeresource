@@ -33,9 +33,14 @@ module OpenStack
           attribute :description, :string
         end
 
-        validates :enabled, :inclusion => {:in => [true, false]}
-        validates :name, :format => {:with => /\A\w[\w\s]+\w\Z/}
-        validates :description, :format => {:with => /\A[\w\s\.\-:@+,'"]+\Z/}
+        validates :enabled,
+                  :presence => true,
+                  :inclusion => {:in => [true, false], :allow_blank => true}
+        validates :name,
+                  :presence => true,
+                  :format => {:with => /\A\w[\w\s]+\w\Z/, :allow_blank => true}
+        validates :description,
+                  :format => {:with => /\A[\w\s\.\-:@+,'"]+\Z/, :allow_blank => true}
 
         def initialize(params = {}, persisted = false) #:notnew:
           super(params, persisted)

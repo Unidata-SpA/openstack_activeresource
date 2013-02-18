@@ -35,8 +35,10 @@ module OpenStack
           attribute :description, :string
         end
 
-        validates :name, :presence => true
-        validates :description, :presence => true
+        validates :name,
+                  :presence => true
+        validates :description,
+                  :presence => true
 
       end
 
