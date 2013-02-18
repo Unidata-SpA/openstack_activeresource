@@ -47,7 +47,7 @@ module OpenStack
                   :length => {:minimum => 8, :allow_blank => true}
         validates :email,
                   :presence => true,
-                  :formate => {:with => /\A[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,4}\Z/i, :allow_blank => true}
+                  :format => {:with => /\A[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,4}\Z/i, :allow_blank => true}
         validates :enabled,
                   :presence => true,
                   :inclusion => {:in => [true, false], :allow_blank => true}
