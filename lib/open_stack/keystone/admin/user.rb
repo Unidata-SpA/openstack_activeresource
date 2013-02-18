@@ -117,6 +117,14 @@ module OpenStack
           OpenStack::Keystone::Admin::Tenant.find tenant_id
         end
 
+        # Set the primary (default) tenant associated with this user
+        #
+        # ==== Attributes
+        # * +primary_tenant+ - A valid tenant or a tenant_id
+        def tenant=(primary_tenant)
+          self.tenant_id = primary_tenant.is_a?(OpenStack::Keystone::Admin::Tenant) ? primary_tenant.id : primary_tenant
+        end
+
         # File role(s) (i.e. instances of OpenStack::Keystone::Admin::UserRole) for this user in a given tenant
         #
         # ==== Attributes
