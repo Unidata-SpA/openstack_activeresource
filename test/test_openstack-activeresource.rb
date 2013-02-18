@@ -72,6 +72,21 @@ class TestOpenStackActiveResource < Test::Unit::TestCase
 
   end
 
+  def test_list_users
+    return unless admin_test_possible?
+
+    auth_admin
+
+    assert_nothing_raised ActiveResource::ClientError, "Cannot list users" do
+      users = OpenStack::Keystone::Admin::User.all
+
+      assert_block("No users?") do
+        !users.nil? && !users.empty?
+      end
+    end
+
+  end
+
   # Nova
 
   ## Flavors
