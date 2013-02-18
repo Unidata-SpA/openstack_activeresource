@@ -42,11 +42,16 @@ module OpenStack
           attribute :project_id, :string
         end
 
-        validates :bridge, :format => {:with => /\A[a-z][a-z0-9]{1,8}\Z/i}
-        validates :bridge_interface, :format => {:with => /\A[a-z]{1,5}[a-z0-9]{1,5}(\.[0-9]{1,4})?\Z/i}
+        validates :bridge,
+                  :format => {:with => /\A[a-z][a-z0-9]{1,8}\Z/i}
+        validates :bridge_interface,
+                  :format => {:with => /\A[a-z]{1,5}[a-z0-9]{1,5}(\.[0-9]{1,4})?\Z/i}
         validates :cidr, :presence => true
-        validates :label, :presence => true, :format => {:with => /\A[\w\s\d]{1,20}\Z/i}
-        validates :vlan, :presence => true, :numericality => {:greater_than_or_equal_to => 2, :less_than_or_equal_to => 4096}
+        validates :label, :presence => true,
+                  :format => {:with => /\A[\w\s\d]{1,20}\Z/i}
+        validates :vlan,
+                  :presence => true,
+                  :numericality => {:greater_than_or_equal_to => 2, :less_than_or_equal_to => 4096, :allow_blank => true}
 
       end
 

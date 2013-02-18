@@ -52,9 +52,14 @@ module OpenStack
           attribute :key_pair_id, :string
         end
 
-        validates :name, :format => {:with => /\A[\w\.\-\_]{2,}\Z/}, :length => {:maximum => 255}
-        validates :image, :presence => true
-        validates :flavor, :presence => true
+        validates :name,
+                  :presence => true,
+                  :format => {:with => /\A[\w\.\-\_]{2,}\Z/, :allow_blank => true},
+                  :length => {:maximum => 255}
+        validates :image,
+                  :presence => true
+        validates :flavor,
+                  :presence => true
 
         # Return the list of server for a given tenant
         #
