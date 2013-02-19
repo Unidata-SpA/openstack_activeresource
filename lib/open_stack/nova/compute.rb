@@ -33,6 +33,7 @@ module OpenStack
       autoload :Server
       autoload :SimpleTenantUsage
       autoload :VolumeAttachment
+      autoload :QuotaSet
     end
 
   end
