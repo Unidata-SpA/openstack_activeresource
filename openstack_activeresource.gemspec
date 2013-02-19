@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "openstack_activeresource"
-  s.version = "0.3.5"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Davide Guerri"]
-  s.date = "2013-02-18"
+  s.date = "2013-02-19"
   s.description = "OpenStack Ruby and RoR bindings implemented with ActiveResource - See also http://www.unicloud.it"
   s.email = "d.guerri@rd.unidata.it"
   s.extra_rdoc_files = [
@@ -53,6 +53,7 @@ Gem::Specification.new do |s|
     "lib/open_stack/nova/compute/image.rb",
     "lib/open_stack/nova/compute/key_pair.rb",
     "lib/open_stack/nova/compute/network.rb",
+    "lib/open_stack/nova/compute/quota_set.rb",
     "lib/open_stack/nova/compute/security_group.rb",
     "lib/open_stack/nova/compute/server.rb",
     "lib/open_stack/nova/compute/simple_tenant_usage.rb",
@@ -65,7 +66,18 @@ Gem::Specification.new do |s|
     "test/.gitignore",
     "test/helper.rb",
     "test/test_configuration-sample.yml",
-    "test/test_openstack-activeresource.rb"
+    "test/test_keystone_authentications.rb",
+    "test/test_keystone_tenants.rb",
+    "test/test_keystone_users.rb",
+    "test/test_nova_flavors.rb",
+    "test/test_nova_floating_ips.rb",
+    "test/test_nova_images.rb",
+    "test/test_nova_keypairs.rb",
+    "test/test_nova_quota_sets.rb",
+    "test/test_nova_security_groups.rb",
+    "test/test_nova_servers.rb",
+    "test/test_simple_tenant_usages.rb",
+    "test/utils.rb"
   ]
   s.homepage = "https://github.com/Unidata-SpA/openstack_activeresource"
   s.licenses = ["GPLv3"]
