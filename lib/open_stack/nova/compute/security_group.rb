@@ -50,7 +50,7 @@ module OpenStack
       # * +to_port+ - Final port
       # * +parent_group_id+ - The security group this rule belongs to
       # * +cidr+ - A cidr
-      class SecurityGroup::Rule < Base
+      class Rule < Base
         self.element_name = "security_group_rule"
         self.collection_name = "os-security-group-rules"
 
