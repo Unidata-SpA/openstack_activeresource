@@ -25,7 +25,6 @@ module OpenStack
       autoload :Role
       autoload :Tenant
       autoload :User
-      autoload :UserRole
     end
 
   end

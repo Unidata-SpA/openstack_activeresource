@@ -26,4 +26,23 @@ class TestOpenStackActiveResource < Test::Unit::TestCase
 
   end
 
+  def test_list_user_roles
+    return unless admin_test_possible?
+
+    auth_admin
+
+    user = OpenStack::Keystone::Admin::User.first
+
+    assert_nothing_raised ActiveResource::ClientError, "Cannot list user roles" do
+
+      roles = user.roles
+
+      assert_not_nil roles
+      assert_block("No users?") do
+        !roles.empty?
+      end
+    end
+
+  end
+
 end

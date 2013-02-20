@@ -133,7 +133,28 @@ module OpenStack
         def roles(scope = :all, tenant = nil)
           tenant_id = tenant.is_a?(OpenStack::Keystone::Admin::Tenant) ? tenant.id : (tenant || self.tenant_id)
 
-          OpenStack::Keystone::Admin::UserRole.find(scope, :params => {:tenant_id => tenant_id, :user_id => self.id})
+          UserRole.find(scope, :params => {:tenant_id => tenant_id, :user_id => self.id})
+        end
+
+        # User Role ("admin view") (\*Warning:* incomplete)
+        #
+        # ==== Attributes
+        # * +name+ - The name of the Role
+        # * +description+ - A description of the role
+        class UserRole < Base
+          self.element_name = "role"
+          self.site = superclass.site + "tenants/:tenant_id/users/:user_id"
+
+          schema do
+            attribute :name, :string
+            attribute :description, :string
+          end
+
+          # Return the associated instance of OpenStack::Keystone::Admin::Role
+          def role
+            OpenStack::Keystone::Admin::Role.find(self.id) if persisted?
+          end
+
         end
 
       end
