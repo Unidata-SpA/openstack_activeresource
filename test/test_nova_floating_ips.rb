@@ -17,7 +17,7 @@ class TestOpenStackActiveResource < Test::Unit::TestCase
     assert_nothing_raised ActiveResource::ClientError, "Cannot list floating IP" do
       floating_ips = OpenStack::Nova::Compute::FloatingIp.all
 
-      assert_not_nil floating_ips, "Cannot retrieve key-pairs"
+      assert_not_nil floating_ips, "Cannot retrieve floating IP list"
     end
   end
 
