@@ -68,10 +68,10 @@ class ActiveResource::ClientError < ActiveResource::ConnectionError
 
   def message
     decoded_error = decode_openstack_error
-    decoded_error.nil? ? old_message : decoded_error
+    decoded_error.nil? ? @message : decoded_error
   rescue Exception => e
     # Fallback to the original method
-    old_message
+    @message
   end
 
   def to_s
