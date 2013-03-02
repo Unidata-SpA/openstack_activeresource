@@ -47,5 +47,13 @@ module OpenstackTestUtils
     ret
   end
 
+  def active_resource_errors_to_s(active_resource)
+    message = ""
+    active_resource.errors.messages.each_pair { |k, v|
+      message += "#{k}: " + v.join(",") + ". \n"
+    }
+
+    message
+  end
 
 end
