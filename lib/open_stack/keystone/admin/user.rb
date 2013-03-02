@@ -143,7 +143,7 @@ module OpenStack
         # * +description+ - A description of the role
         class UserRole < Base
           self.element_name = "role"
-          self.site = superclass.site + "tenants/:tenant_id/users/:user_id"
+          self.site = "#{superclass.site}/tenants/:tenant_id/users/:user_id"
 
           schema do
             attribute :name, :string
