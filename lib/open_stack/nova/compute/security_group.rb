@@ -76,7 +76,7 @@ module OpenStack
         validates_numericality_of :to_port, :greater_than_or_equal_to => :from_port, :if => Proc.new { |rule| rule.udp? or rule.tcp? }
 
 
-        def initialize(attributes = {}, persisted = false) #:notnew:
+        def initialize(attributes = {}, persisted = false) # :notnew:
           attributes = attributes.with_indifferent_access
           new_attributes = {
               :id => attributes[:id],
@@ -90,7 +90,7 @@ module OpenStack
         end
 
         # Override ActiveRecord::encode method
-        def encode(options={}) #:nodoc: Custom encoding to deal with openstack API
+        def encode(options={}) # :nodoc: Custom encoding to deal with openstack API
           to_encode = {
               :security_group_rule => {
                   :ip_protocol => ip_protocol,

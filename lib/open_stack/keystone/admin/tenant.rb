@@ -42,13 +42,13 @@ module OpenStack
         validates :description,
                   :format => {:with => /\A[\w\s\.\-:@+,'"]+\Z/, :allow_blank => true}
 
-        def initialize(params = {}, persisted = false) #:notnew:
+        def initialize(params = {}, persisted = false) # :notnew:
           super(params, persisted)
 
           self.description = description
         end
 
-        def self.find_every(options) #:nodoc:
+        def self.find_every(options) # :nodoc:
           class_name = self.name.split('::').last.downcase
           begin
             case from = options[:from]

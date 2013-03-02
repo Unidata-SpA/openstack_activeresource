@@ -52,7 +52,7 @@ module OpenStack
                   :presence => true,
                   :inclusion => {:in => [true, false], :allow_blank => true}
 
-        def initialize(attributes = {}, persisted = false) #:notnew:
+        def initialize(attributes = {}, persisted = false) # :notnew:
           attributes = attributes.with_indifferent_access
 
           if attributes[:tenant].present?
@@ -67,7 +67,7 @@ module OpenStack
         end
 
         # Overloads ActiveRecord::encode method
-        def encode(options={}) #:nodoc: Custom encoding to deal with openstack API
+        def encode(options={}) # :nodoc: Custom encoding to deal with openstack API
           to_encode = {
               :user => {
                   :name => name,

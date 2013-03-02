@@ -42,7 +42,7 @@ module OpenStack
         validates :server,
                   :presence => true
 
-        def initialize(attributes = {}, persisted = false) #:notnew:
+        def initialize(attributes = {}, persisted = false) # :notnew:
           attributes = attributes.with_indifferent_access
           new_attributes = {
               :device => attributes[:device],
@@ -68,8 +68,7 @@ module OpenStack
         end
 
         # Overloads ActiveRecord::encode method
-        def encode(options={}) #:nodoc:
-                               # Custom encoding to deal with openstack API
+        def encode(options={}) # :nodoc: Custom encoding to deal with openstack API
           to_encode = {
               VolumeAttachment.element_name => {
                   :device => device,

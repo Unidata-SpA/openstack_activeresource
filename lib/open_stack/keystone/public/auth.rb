@@ -36,7 +36,7 @@ module OpenStack
                   :presence => true,
                   :unless => Proc.new { token.present? }
 
-        def initialize(attributes = {}, persisted = false) #:notnew:
+        def initialize(attributes = {}, persisted = false) # :notnew:
           attributes[:username] ||= ""
           attributes[:password] ||= ""
 
@@ -50,7 +50,7 @@ module OpenStack
         end
 
         # Overloads ActiveRecord::encode method
-        def encode(options={}) #:nodoc: Custom encoding to deal with openstack API
+        def encode(options={}) # :nodoc: Custom encoding to deal with openstack API
           to_encode = {}
           if token.present?
             to_encode[:auth] = {
@@ -72,7 +72,7 @@ module OpenStack
           to_encode.send("to_#{self.class.format.extension}", options)
         end
 
-        def save #:nodoc: Catch some exceptions to perform "remote validation" of this resource
+        def save # :nodoc: Catch some exceptions to perform "remote validation" of this resource
           super
         rescue ActiveResource::UnauthorizedAccess
           errors.add :password, I18n.t(:is_invalid)
@@ -133,7 +133,7 @@ module OpenStack
           attribute :expires, :string
         end
 
-        def initialize(attributes = {}, persisted = false) #:notnew:
+        def initialize(attributes = {}, persisted = false) # :notnew:
           attributes = attributes.with_indifferent_access
           new_attributes = {
               :id => attributes[:id],
