@@ -34,8 +34,7 @@ module OpenStack
         end
 
         validates :enabled,
-                  :presence => true,
-                  :inclusion => {:in => [true, false], :allow_blank => true}
+                  :inclusion => {:in => [true, false]}
         validates :name,
                   :presence => true,
                   :format => {:with => /\A\w[\w\s]+\w\Z/, :allow_blank => true}
