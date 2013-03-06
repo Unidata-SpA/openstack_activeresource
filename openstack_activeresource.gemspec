@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "openstack_activeresource"
-  s.version = "0.4.0"
+  s.version = "0.5.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Davide Guerri"]
-  s.date = "2013-02-19"
+  s.date = "2013-03-06"
   s.description = "OpenStack Ruby and RoR bindings implemented with ActiveResource - See also http://www.unicloud.it"
   s.email = "d.guerri@rd.unidata.it"
   s.extra_rdoc_files = [
@@ -38,7 +38,6 @@ Gem::Specification.new do |s|
     "lib/open_stack/keystone/admin/role.rb",
     "lib/open_stack/keystone/admin/tenant.rb",
     "lib/open_stack/keystone/admin/user.rb",
-    "lib/open_stack/keystone/admin/user_role.rb",
     "lib/open_stack/keystone/public.rb",
     "lib/open_stack/keystone/public/auth.rb",
     "lib/open_stack/keystone/public/base.rb",
@@ -68,7 +67,7 @@ Gem::Specification.new do |s|
     "test/test_configuration-sample.yml",
     "test/test_keystone_authentications.rb",
     "test/test_keystone_tenants.rb",
-    "test/test_keystone_users.rb",
+    "test/test_keystone_users_and_roles.rb",
     "test/test_nova_flavors.rb",
     "test/test_nova_floating_ips.rb",
     "test/test_nova_images.rb",
@@ -89,36 +88,36 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<activemodel>, ["~> 3.2.6"])
-      s.add_runtime_dependency(%q<activeresource>, ["~> 3.2.6"])
+      s.add_runtime_dependency(%q<activemodel>, ["~> 3.2.12"])
+      s.add_runtime_dependency(%q<activeresource>, ["~> 3.2.12"])
       s.add_runtime_dependency(%q<oj>, ["~> 1.2.9"])
-      s.add_runtime_dependency(%q<bundler>, ["~> 1.2.0"])
-      s.add_runtime_dependency(%q<shoulda>, [">= 0"])
-      s.add_runtime_dependency(%q<rdoc>, ["~> 3.12"])
-      s.add_runtime_dependency(%q<jeweler>, ["~> 1.8.4"])
-      s.add_runtime_dependency(%q<simplecov>, [">= 0"])
       s.add_runtime_dependency(%q<json>, ["~> 1.7.7"])
+      s.add_development_dependency(%q<shoulda>, [">= 0"])
+      s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
+      s.add_development_dependency(%q<jeweler>, ["~> 1.8.4"])
+      s.add_development_dependency(%q<simplecov>, [">= 0"])
+      s.add_development_dependency(%q<test-unit>, [">= 0"])
     else
-      s.add_dependency(%q<activemodel>, ["~> 3.2.6"])
-      s.add_dependency(%q<activeresource>, ["~> 3.2.6"])
+      s.add_dependency(%q<activemodel>, ["~> 3.2.12"])
+      s.add_dependency(%q<activeresource>, ["~> 3.2.12"])
       s.add_dependency(%q<oj>, ["~> 1.2.9"])
-      s.add_dependency(%q<bundler>, ["~> 1.2.0"])
+      s.add_dependency(%q<json>, ["~> 1.7.7"])
       s.add_dependency(%q<shoulda>, [">= 0"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
       s.add_dependency(%q<simplecov>, [">= 0"])
-      s.add_dependency(%q<json>, ["~> 1.7.7"])
+      s.add_dependency(%q<test-unit>, [">= 0"])
     end
   else
-    s.add_dependency(%q<activemodel>, ["~> 3.2.6"])
-    s.add_dependency(%q<activeresource>, ["~> 3.2.6"])
+    s.add_dependency(%q<activemodel>, ["~> 3.2.12"])
+    s.add_dependency(%q<activeresource>, ["~> 3.2.12"])
     s.add_dependency(%q<oj>, ["~> 1.2.9"])
-    s.add_dependency(%q<bundler>, ["~> 1.2.0"])
+    s.add_dependency(%q<json>, ["~> 1.7.7"])
     s.add_dependency(%q<shoulda>, [">= 0"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
     s.add_dependency(%q<simplecov>, [">= 0"])
-    s.add_dependency(%q<json>, ["~> 1.7.7"])
+    s.add_dependency(%q<test-unit>, [">= 0"])
   end
 end
 
