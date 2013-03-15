@@ -42,17 +42,16 @@ module OpenStack
                   :length => {:minimum => 4, :allow_blank => true},
                   :format => {:with => /\A[0-9a-z_]+\Z/i, :allow_blank => true}
         validates :password,
-                  :presence => true,
+                  :presence => { :with =>true, :on => :create },
                   :format => {:with => /(?=.*[\d\W])/, :message => :must_contain_at_least_one_digit_or_one_special_character, :allow_blank => true},
                   :length => {:minimum => 8, :allow_blank => true}
         validates :email,
                   :presence => true,
                   :format => {:with => /\A[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,4}\Z/i, :allow_blank => true}
         validates :enabled,
-                  :presence => true,
-                  :inclusion => {:in => [true, false], :allow_blank => true}
+                  :inclusion => {:in => [true, false]}
 
-        def initialize(attributes = {}, persisted = false) #:notnew:
+        def initialize(attributes = {}, persisted = false) # :notnew:
           attributes = attributes.with_indifferent_access
 
           if attributes[:tenant].present?
@@ -67,7 +66,7 @@ module OpenStack
         end
 
         # Overloads ActiveRecord::encode method
-        def encode(options={}) #:nodoc: Custom encoding to deal with openstack API
+        def encode(options={}) # :nodoc: Custom encoding to deal with openstack API
           to_encode = {
               :user => {
                   :name => name,
@@ -133,7 +132,28 @@ module OpenStack
         def roles(scope = :all, tenant = nil)
           tenant_id = tenant.is_a?(OpenStack::Keystone::Admin::Tenant) ? tenant.id : (tenant || self.tenant_id)
 
-          OpenStack::Keystone::Admin::UserRole.find(scope, :params => {:tenant_id => tenant_id, :user_id => self.id})
+          UserRole.find(scope, :params => {:tenant_id => tenant_id, :user_id => self.id})
+        end
+
+        # User Role ("admin view") (\*Warning:* incomplete)
+        #
+        # ==== Attributes
+        # * +name+ - The name of the Role
+        # * +description+ - A description of the role
+        class UserRole < Base
+          self.element_name = "role"
+          self.site = "#{superclass.site}/tenants/:tenant_id/users/:user_id"
+
+          schema do
+            attribute :name, :string
+            attribute :description, :string
+          end
+
+          # Return the associated instance of OpenStack::Keystone::Admin::Role
+          def role
+            OpenStack::Keystone::Admin::Role.find(self.id) if persisted?
+          end
+
         end
 
       end

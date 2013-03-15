@@ -25,18 +25,22 @@ module OpenStack
       # * +name+ - The name of the flavor
       # * +ram+ - Amount of RAM (MBytes)
       # * +disk+ - Amount of storage (GBytes)
+      # * +swap+ - Amount of swap storage (MBytes)
       # * +vcpus+ - Virtual CPUs
       # * +rxtx_factor+ - Traffic shaping (?)
       # * +ephemeral_disk+ - Ephemeral storage amount (GByte)
+      # * +is_public+ - True if the flavor is public
       class Flavor < BaseDetail
 
         schema do
           attribute :name, :string
           attribute :ram, :integer
           attribute :disk, :integer
+          attribute :swap, :integer
           attribute :vcpus, :integer
           attribute :rxtx_factor, :float
           attribute :ephemeral_disk, :integer
+          attribute :is_public, :boolean
         end
 
         validates :name,
@@ -52,9 +56,55 @@ module OpenStack
         validates :disk,
                   :presence => true,
                   :numericality => {:greater_than_or_equal_to => 10, :only_integer => true, :allow_blank => true}
+        validates :swap,
+                  :presence => true,
+                  :numericality => {:greater_than_or_equal_to => 1, :only_integer => true, :allow_blank => true}
         validates :ephemeral_disk,
-                  :presence => false,
-                  :numericality => {:greater_than_or_equal_to => 10, :only_integer => true}
+                  :presence => true,
+                  :numericality => {:greater_than_or_equal_to => 0, :only_integer => true, :allow_blank => true}
+        validates :rxtx_factor,
+                  :presence => true,
+                  :numericality => {:only_integer => false, :allow_blank => true}
+        validates :is_public,
+                  :inclusion => {:in => [true, false], :allow_blank => true}
+
+        def initialize(attributes = {}, persisted = false) # :notnew:
+          attributes = attributes.with_indifferent_access
+          new_attributes = {
+              :id => attributes[:id],
+              :name => attributes[:name],
+              :ram => attributes[:ram],
+              :disk => attributes[:disk],
+              :swap => attributes[:swap],
+              :vcpus => attributes[:vcpus],
+              :rxtx_factor => attributes[:rxtx_factor],
+              :ephemeral_disk => attributes[:'OS-FLV-EXT-DATA:ephemeral'] || attributes[:ephemeral_disk],
+              :is_public => attributes[:'os-flavor-access:is_public'] || attributes[:is_public]
+          }
+          super(new_attributes, persisted)
+
+          self
+        end
+
+        # Overloads ActiveRecord::encode method
+        def encode(options={}) # :nodoc: Custom encoding to deal with openstack API
+          to_encode = {
+              :flavor => {
+                  :name => name,
+                  :ram => ram,
+                  :disk => disk,
+                  :swap => swap,
+                  :vcpus => vcpus
+              }
+          }
+
+          # Optional attributes (openstack will not accept empty attribute for update/create)
+          to_encode[:flavor][:'OS-FLV-EXT-DATA:ephemeral'] = ephemeral_disk if ephemeral_disk.present?
+          to_encode[:flavor][:'os-flavor-access:is_public'] = is_public if is_public.present?
+          to_encode[:flavor][:rxtx_factor] = rxtx_factor if rxtx_factor.present?
+
+          to_encode.send("to_#{self.class.format.extension}", options)
+        end
 
         # Returns a list of Flavor for a given name
         #
@@ -82,7 +132,7 @@ module OpenStack
           constraints[:vcpus] ||= -1.0/0.0
           constraints[:disk] ||= -1.0/0.0
 
-          all.select { |flavor| flavor.ram >= constraints[:ram] and flavor.vcpus >= constraints[:vcpus] and flavor.disk >= constraints[:disk] }
+          self.all.select { |flavor| flavor.ram >= constraints[:ram] and flavor.vcpus >= constraints[:vcpus] and flavor.disk >= constraints[:disk] }
         end
 
         # Returns a list of Flavor that can be used with the given Image
@@ -97,11 +147,6 @@ module OpenStack
           constraints[:disk] = image.min_disk if image_instance.min_disk > 0
 
           find_by_constraints constraints
-        end
-
-        # Returns the amount of ephemeral disk
-        def ephemeral_disk
-          @attributes[:'OS-FLV-EXT-DATA:ephemeral'] || nil
         end
 
         # Returns a human-friendly description for this Flavor

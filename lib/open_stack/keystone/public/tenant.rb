@@ -31,10 +31,9 @@ module OpenStack
           attribute :name, :string
           attribute :description, :string
           attribute :enabled, :boolean
-
         end
 
-        def self.find_every(options) #:nodoc:
+        def self.find_every(options) # :nodoc:
           class_name = self.name.split('::').last.downcase
           begin
             case from = options[:from]

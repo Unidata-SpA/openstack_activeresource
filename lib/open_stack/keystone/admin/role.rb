@@ -30,6 +30,11 @@ module OpenStack
           attribute :name, :string
         end
 
+        validates :name,
+                  :presence => true,
+                  :length => {:minimum => 4, :allow_blank => true},
+                  :format => {:with => /\A[0-9a-z_]+\Z/i, :allow_blank => true}
+
         # List Roles with a given name
         def self.find_by_name(name)
           all.detect { |role| role.name == name }

@@ -21,6 +21,8 @@ module OpenStack
 
       class Base < OpenStack::Common
 
+        # The following 2 methods overloading are required for Rails applications
+
         # Get the Nova Compute endpoint assigned to OpenStack::Nova::Compute classes
         def self.site
           if self == OpenStack::Nova::Compute::Base

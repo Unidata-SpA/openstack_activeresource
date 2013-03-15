@@ -9,5 +9,6 @@ test_configuration:
   admin_username:     "admin_username"
   admin_password:     "admin_password"
   admin_tenant_id:    "admin_tenant_id"
+  default_role_name:  "member"
 
 # If admin_* are omitted the corresponding tests will be skipped

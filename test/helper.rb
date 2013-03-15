@@ -12,7 +12,6 @@ require 'shoulda'
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
-require 'openstack_activeresource'
 
 class Test::Unit::TestCase
 end
@@ -27,6 +26,9 @@ unless  File.exist? "#{test_path}/test_configuration.yml"
             "\n**** See #{test_path}/test_configuration-sample.yml for an example" +
             "\n****"
 end
+
+require 'openstack_activeresource'
+require 'utils'
 
 TEST_CONFIG = (YAML.load_file("#{test_path}/test_configuration.yml")['test_configuration']).with_indifferent_access
 
