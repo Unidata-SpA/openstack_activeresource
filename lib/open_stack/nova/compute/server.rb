@@ -127,8 +127,7 @@ module OpenStack
         end
 
         # Overloads ActiveRecord::encode method
-        def encode(options={}) #:nodoc:
-                               # Custom encoding to deal with openstack API
+        def encode(options={}) # :nodoc: Custom encoding to deal with openstack API
           to_encode = {
               :server => {
                   :name => name,
@@ -279,27 +278,27 @@ module OpenStack
         end
 
         SERVER_STATUSES = {
-            :ACTIVE => I18n.t(:active, :scope => [:openstack, :status]),
-            :BUILD => I18n.t(:building, :scope => [:openstack, :status]),
-            :DELETED => I18n.t(:deleted, :scope => [:openstack, :status]),
-            :ERROR => I18n.t(:in_error, :scope => [:openstack, :status]),
-            :HARD_REBOOT => I18n.t(:hard_rebooting, :scope => [:openstack, :status]),
-            :PASSWORD => I18n.t(:resetting_password, :scope => [:openstack, :status]),
-            :REBOOT => I18n.t(:soft_rebooting, :scope => [:openstack, :status]),
-            :REBUILD => I18n.t(:rebuilding_from_image, :scope => [:openstack, :status]),
-            :RESCUE => I18n.t(:in_rescue_mode, :scope => [:openstack, :status]),
-            :RESIZE => I18n.t(:resizing, :scope => [:openstack, :status]),
-            :REVERT_RESIZE => I18n.t(:revert_resizing, :scope => [:openstack, :status]),
-            :SHUTOFF => I18n.t(:user_powered_down, :scope => [:openstack, :status]),
-            :SUSPENDED => I18n.t(:suspended, :scope => [:openstack, :status]),
-            :PAUSED => I18n.t(:paused, :scope => [:openstack, :status]),
-            :UNKNOWN => I18n.t(:unknown, :scope => [:openstack, :status]),
-            :VERIFY_RESIZE => I18n.t(:awaiting_verification, :scope => [:openstack, :status])
+            :ACTIVE => :active,
+            :BUILD => :building,
+            :DELETED => :deleted,
+            :ERROR => :in_error,
+            :HARD_REBOOT => :hard_rebooting,
+            :PASSWORD => :resetting_password,
+            :REBOOT => :soft_rebooting,
+            :REBUILD => :rebuilding_from_image,
+            :RESCUE => :in_rescue_mode,
+            :RESIZE => :resizing,
+            :REVERT_RESIZE => :revert_resizing,
+            :SHUTOFF => :user_powered_down,
+            :SUSPENDED => :suspended,
+            :PAUSED => :paused,
+            :UNKNOWN => :unknown,
+            :VERIFY_RESIZE => :awaiting_verification
         }.with_indifferent_access
 
         # Returns an extended (and localized) description for the server status
         def status_description
-          SERVER_STATUSES[status]
+          I18n.t(SERVER_STATUSES[status],:scope => [:openstack, :status])
         end
 
         # Returns a localized description for the server task (if any)

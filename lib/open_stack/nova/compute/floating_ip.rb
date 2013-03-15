@@ -38,7 +38,7 @@ module OpenStack
         end
 
         # Overloads ActiveRecord::encode method
-        def encode(options={}) #:nodoc: Custom encoding to deal with openstack API
+        def encode(options={}) # :nodoc: Custom encoding to deal with openstack API
           to_encode = {}
           # Optional attributes (openstack will not accept empty attribute for update/create)
           to_encode[:pool] = pool if pool.present?

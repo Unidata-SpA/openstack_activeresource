@@ -37,7 +37,7 @@ module OpenStack
           attribute :fingerprint, :string
         end
 
-        def id #:nodoc:
+        def id # :nodoc:
           name
         end
 

@@ -1,20 +1,20 @@
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
-    activemodel (3.2.9)
-      activesupport (= 3.2.9)
+    activemodel (3.2.12)
+      activesupport (= 3.2.12)
       builder (~> 3.0.0)
-    activeresource (3.2.9)
-      activemodel (= 3.2.9)
-      activesupport (= 3.2.9)
-    activesupport (3.2.9)
+    activeresource (3.2.12)
+      activemodel (= 3.2.12)
+      activesupport (= 3.2.12)
+    activesupport (3.2.12)
       i18n (~> 0.6)
       multi_json (~> 1.0)
     bourne (1.1.2)
       mocha (= 0.10.5)
     builder (3.0.4)
     git (1.2.5)
-    i18n (0.6.1)
+    i18n (0.6.4)
     jeweler (1.8.4)
       bundler (~> 1.0)
       git (>= 1.2.5)
@@ -24,10 +24,10 @@ GEM
     metaclass (0.0.1)
     mocha (0.10.5)
       metaclass (~> 0.0.1)
-    multi_json (1.5.0)
+    multi_json (1.6.1)
     oj (1.2.13)
     rake (10.0.3)
-    rdoc (3.12)
+    rdoc (3.12.2)
       json (~> 1.4)
     shoulda (3.3.2)
       shoulda-context (~> 1.0.1)
@@ -40,17 +40,18 @@ GEM
       multi_json (~> 1.0)
       simplecov-html (~> 0.7.1)
     simplecov-html (0.7.1)
+    test-unit (2.5.4)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  activemodel (~> 3.2.6)
-  activeresource (~> 3.2.6)
-  bundler (~> 1.2.0)
+  activemodel (~> 3.2.12)
+  activeresource (~> 3.2.12)
   jeweler (~> 1.8.4)
   json (~> 1.7.7)
   oj (~> 1.2.9)
   rdoc (~> 3.12)
   shoulda
   simplecov
+  test-unit

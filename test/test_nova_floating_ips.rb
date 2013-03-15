@@ -1,12 +1,7 @@
-lib_path = File.expand_path('../../lib', __FILE__)
-$:.unshift(lib_path)
-
 test_path = File.expand_path('..', __FILE__)
 $:.unshift(test_path)
 
 require 'helper'
-require 'openstack_activeresource'
-require 'utils'
 
 class TestOpenStackActiveResource < Test::Unit::TestCase
   include OpenstackTestUtils
@@ -17,7 +12,7 @@ class TestOpenStackActiveResource < Test::Unit::TestCase
     assert_nothing_raised ActiveResource::ClientError, "Cannot list floating IP" do
       floating_ips = OpenStack::Nova::Compute::FloatingIp.all
 
-      assert_not_nil floating_ips, "Cannot retrieve key-pairs"
+      assert_not_nil floating_ips, "Cannot retrieve floating IP list"
     end
   end
 

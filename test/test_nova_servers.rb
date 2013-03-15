@@ -1,12 +1,7 @@
-lib_path = File.expand_path('../../lib', __FILE__)
-$:.unshift(lib_path)
-
 test_path = File.expand_path('..', __FILE__)
 $:.unshift(test_path)
 
 require 'helper'
-require 'openstack_activeresource'
-require 'utils'
 
 class TestOpenStackActiveResource < Test::Unit::TestCase
   include OpenstackTestUtils

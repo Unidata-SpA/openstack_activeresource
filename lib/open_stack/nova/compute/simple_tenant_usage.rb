@@ -40,7 +40,7 @@ module OpenStack
         end
 
         # Redefine the find method to add the detailed flag
-        def self.find(*arguments) #:nodoc:
+        def self.find(*arguments) # :nodoc:
           scope = arguments.slice!(0)
           options = arguments.slice!(0) || {}
 

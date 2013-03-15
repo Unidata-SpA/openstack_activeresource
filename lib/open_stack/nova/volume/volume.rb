@@ -51,7 +51,7 @@ module OpenStack
                   :presence => true,
                   :numericality => {:greater_than_or_equal_to => 1, :only_integer => true, :allow_blank => true}
 
-        def initialize(attributes = {}, persisted = false) #:notnew:
+        def initialize(attributes = {}, persisted = false) # :notnew:
           attributes = attributes.with_indifferent_access
           new_attributes = {
               :id => attributes[:id],

@@ -17,7 +17,9 @@
 
 # Reopens ActiveResource::Base to fix "ActiveResource nested resources not being persisted"
 # See https://github.com/rails/rails/pull/3107
-module ActiveResource #:nodoc:
+# and https://github.com/rails/activeresource/pull/30
+# Fixes non yet included in any ActiveResource releases (as of 2013-02-28)
+module ActiveResource # :nodoc:
   class Base
 
     def load(attributes, remove_root = false)
