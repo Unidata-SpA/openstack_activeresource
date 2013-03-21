@@ -63,7 +63,7 @@ module OpenStack
         end
 
         validates :ip_protocol, :presence => true, :inclusion => {:in => %w(tcp udp icmp)}
-        validates :cidr, :presence => true, :format => {:with => OpenStack::IPV4_CIDR_REGEX}
+        validates :cidr, :presence => true, :format => {:with => OpenStack::IP_VALIDATION_REGEX}
         validates :parent_group_id, :presence => true
         validates :from_port, :presence => true, :numericality => {:only_integer => true}
         validates :to_port, :presence => true, :numericality => {:only_integer => true}
