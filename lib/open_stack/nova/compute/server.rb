@@ -111,6 +111,11 @@ module OpenStack
             # We ignore the list of security group names provided in attributes[:security_group]
             # Security group ids will be retrieved when needed
             new_attributes[:security_group_ids] = []
+
+            new_attributes[:nets] = []
+            attributes[:addresses].each do |net_name, addresses|
+              new_attributes[:nets] << { :name => net_name, :addresses => addresses }
+            end
           else
 
             if attributes[:security_group_ids].nil?
@@ -219,18 +224,6 @@ module OpenStack
           security_groups
         end
 
-        # Addresses hash associated to this server
-        def addresses
-          addresses = {}
-          if persisted?
-            response = get('ips')
-            response.each do |net, address|
-              addresses[net] = address
-            end
-          end
-          addresses
-        end
-
         def addresses=(something) # :nodoc: do Nothing (it's a read-only attribute for OpenStack)
 
         end
@@ -272,9 +265,9 @@ module OpenStack
             self.task = updated.task
             self.power_state = updated.power_state
             self.vm_state = updated.vm_state
-
-            self
           end
+	  
+          self
         end
 
         SERVER_STATUSES = {
