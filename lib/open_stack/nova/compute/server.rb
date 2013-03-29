@@ -44,6 +44,7 @@ module OpenStack
           attribute :vm_state, :string
           attribute :task, :string
           attribute :power_state, :integer
+          attribute :progress, :integer
           attribute :host_id, :string
           attribute :tenant_id, :string
           attribute :user_id, :string
@@ -85,6 +86,7 @@ module OpenStack
               :vm_state => attributes[:'OS-EXT-STS:vm_state'],
               :task => attributes[:'OS-EXT-STS:task_state'],
               :power_state => attributes['OS-EXT-STS:power_state'],
+              :progress => attributes[:progress],
               :host_id => attributes[:hostId],
               :user_data => attributes[:user_data],
           }
