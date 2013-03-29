@@ -17,7 +17,7 @@ Command line:
 
 Or in bundler Gemfile:
 
-   gem "openstack_activeresource", "~> 0.6.0"
+   gem "openstack_activeresource", "~> 0.6.1"
 
 == Sample usages
 
