@@ -44,6 +44,7 @@ module OpenStack
           attribute :vm_state, :string
           attribute :task, :string
           attribute :power_state, :integer
+          attribute :progress, :integer
           attribute :host_id, :string
           attribute :tenant_id, :string
           attribute :user_id, :string
@@ -85,6 +86,7 @@ module OpenStack
               :vm_state => attributes[:'OS-EXT-STS:vm_state'],
               :task => attributes[:'OS-EXT-STS:task_state'],
               :power_state => attributes['OS-EXT-STS:power_state'],
+              :progress => attributes[:progress],
               :host_id => attributes[:hostId],
               :user_data => attributes[:user_data],
           }
@@ -111,6 +113,11 @@ module OpenStack
             # We ignore the list of security group names provided in attributes[:security_group]
             # Security group ids will be retrieved when needed
             new_attributes[:security_group_ids] = []
+
+            new_attributes[:nets] = []
+            attributes[:addresses].each do |net_name, addresses|
+              new_attributes[:nets] << {:name => net_name, :addresses => addresses}
+            end
           else
 
             if attributes[:security_group_ids].nil?
@@ -219,18 +226,6 @@ module OpenStack
           security_groups
         end
 
-        # Addresses hash associated to this server
-        def addresses
-          addresses = {}
-          if persisted?
-            response = get('ips')
-            response.each do |net, address|
-              addresses[net] = address
-            end
-          end
-          addresses
-        end
-
         def addresses=(something) # :nodoc: do Nothing (it's a read-only attribute for OpenStack)
 
         end
@@ -264,6 +259,7 @@ module OpenStack
         #  * task
         #  * power_state
         #  * vm_state
+        #  * ip addresses
         def refresh_status!
           if persisted?
             updated = Server.find(self.id)
@@ -272,9 +268,10 @@ module OpenStack
             self.task = updated.task
             self.power_state = updated.power_state
             self.vm_state = updated.vm_state
-
-            self
+            self.nets = updated.nets
           end
+
+          self
         end
 
         SERVER_STATUSES = {
@@ -298,7 +295,7 @@ module OpenStack
 
         # Returns an extended (and localized) description for the server status
         def status_description
-          I18n.t(SERVER_STATUSES[status],:scope => [:openstack, :status])
+          I18n.t(SERVER_STATUSES[status], :scope => [:openstack, :status])
         end
 
         # Returns a localized description for the server task (if any)

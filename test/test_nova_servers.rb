@@ -35,7 +35,7 @@ class TestOpenStackActiveResource < Test::Unit::TestCase
     end
 
     # Verify server
-    my_server = loop_block(5) do
+    my_server = loop_block(15) do
       begin
         OpenStack::Nova::Compute::Server.find new_server_id
       rescue ActiveResource::ResourceNotFound
@@ -43,12 +43,17 @@ class TestOpenStackActiveResource < Test::Unit::TestCase
         nil
       end
     end
-    assert_not_nil my_server, "Server not spawned after 5 seconds!?!"
+    assert_not_nil my_server, "Server not spawned after 15 seconds!?!"
 
     # Wait for a network address
     my_address = loop_block(60) do
       my_server = OpenStack::Nova::Compute::Server.find new_server_id
-      my_server.addresses.keys.count > 0 ? my_server.addresses : nil
+      if my_server.nets.count > 0 and my_server.nets[0].addresses.count > 0 and my_server.nets[0].addresses[0].addr.present?
+        # puts "**** #{my_server.nets[0].addresses[0].addr} ****"
+        my_server.nets[0].addresses[0].addr
+      else
+        nil
+      end
     end
     assert_not_nil my_address, "No address after a minute!"
 
