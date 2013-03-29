@@ -259,6 +259,7 @@ module OpenStack
         #  * task
         #  * power_state
         #  * vm_state
+        #  * ip addresses
         def refresh_status!
           if persisted?
             updated = Server.find(self.id)
@@ -267,6 +268,7 @@ module OpenStack
             self.task = updated.task
             self.power_state = updated.power_state
             self.vm_state = updated.vm_state
+            self.nets = updated.nets
           end
 
           self
