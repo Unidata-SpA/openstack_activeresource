@@ -114,7 +114,7 @@ module OpenStack
 
             new_attributes[:nets] = []
             attributes[:addresses].each do |net_name, addresses|
-              new_attributes[:nets] << { :name => net_name, :addresses => addresses }
+              new_attributes[:nets] << {:name => net_name, :addresses => addresses}
             end
           else
 
@@ -266,7 +266,7 @@ module OpenStack
             self.power_state = updated.power_state
             self.vm_state = updated.vm_state
           end
-	  
+
           self
         end
 
@@ -291,7 +291,7 @@ module OpenStack
 
         # Returns an extended (and localized) description for the server status
         def status_description
-          I18n.t(SERVER_STATUSES[status],:scope => [:openstack, :status])
+          I18n.t(SERVER_STATUSES[status], :scope => [:openstack, :status])
         end
 
         # Returns a localized description for the server task (if any)
