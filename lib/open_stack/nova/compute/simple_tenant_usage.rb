@@ -124,10 +124,11 @@ module OpenStack
       # * +name+ - The name of the server this entry is related
       # * +vcpus+ - Virtual CPU used by the server in the timespan (+started_at+ - +ended_at+ or +uptime+) for this entry
       # * +memory_mb+ - Memory (MBytes) used by the server in the timespan (+started_at+ - +ended_at+ or +uptime+) for this entry
-      # * +local_gb+ - The amount of storage used over the uptime ()GBytes)
+      # * +local_gb+ - The amount of storage used over the uptime (GBytes)
       # * +flavor+ - The flavor id used by the server in this server usage entry
       # * +state+ - Current state for the server in this server usage entry
       # * +uptime+ - The uptime of this server in seconds
+      # * +instance_id+ - Instance id of the server
       # * +hours+ - The uptime of this server in hours
       # * +tenant_id+ - The tenant id for this server usage entry
       class ServerUsage < Base
@@ -136,6 +137,7 @@ module OpenStack
           attribute :name, :string
           attribute :vcpus, :integer
           attribute :uptime, :integer
+          attribute :instance_id, :integer
           attribute :hours, :float
           attribute :local_gb, :integer
           attribute :tenant_id, :string
