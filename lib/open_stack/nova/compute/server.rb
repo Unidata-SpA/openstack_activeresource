@@ -85,10 +85,11 @@ module OpenStack
               :created_at => attributes[:created].present? ? DateTime.strptime(attributes[:created], OpenStack::DATETIME_FORMAT) : nil,
               :vm_state => attributes[:'OS-EXT-STS:vm_state'],
               :task => attributes[:'OS-EXT-STS:task_state'],
-              :power_state => attributes['OS-EXT-STS:power_state'],
+              :power_state => attributes[:'OS-EXT-STS:power_state'],
               :progress => attributes[:progress],
               :host_id => attributes[:hostId],
               :user_data => attributes[:user_data],
+              :tenant_id => attributes[:tenant_id]
           }
 
           if attributes[:key_pair].present?
