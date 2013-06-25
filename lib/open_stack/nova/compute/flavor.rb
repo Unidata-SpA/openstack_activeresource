@@ -125,14 +125,24 @@ module OpenStack
         # Returns a list of Flavor that can be used with the given constraints
         #
         # ==== Attributes
-        # * +constraints+ - Hash of constraints. Valid keys are: :ram, :vcpus, :disk
+        # * +constraints+ - Hash of constraints. Valid keys are: :min_ram, :min_vcpus, :min_disk, :max_ram, :max_vcpus, :max_disk
         def self.find_by_constraints(constraints = {})
           constraints = constraints.with_indifferent_access
-          constraints[:ram] ||= -1.0/0.0
-          constraints[:vcpus] ||= -1.0/0.0
-          constraints[:disk] ||= -1.0/0.0
+          constraints[:min_ram] ||= -1.0/0.0
+          constraints[:min_vcpus] ||= -1.0/0.0
+          constraints[:min_disk] ||= -1.0/0.0
+          constraints[:max_ram] ||= +1.0/0.0
+          constraints[:max_vcpus] ||= +1.0/0.0
+          constraints[:max_disk] ||= +1.0/0.0
 
-          self.all.select { |flavor| flavor.ram >= constraints[:ram] and flavor.vcpus >= constraints[:vcpus] and flavor.disk >= constraints[:disk] }
+          self.all.select do |flavor|
+              flavor.ram >= constraints[:min_ram] and
+              flavor.vcpus >= constraints[:min_vcpus] and
+              flavor.disk >= constraints[:min_disk] and
+              flavor.ram <= constraints[:max_ram] and
+              flavor.vcpus <= constraints[:max_vcpus] and
+              flavor.disk <= constraints[:max_disk]
+          end
         end
 
         # Returns a list of Flavor that can be used with the given Image
@@ -143,8 +153,19 @@ module OpenStack
           image_instance = image.is_a?(OpenStack::Nova::Compute::Image) ? image : Image.find(image)
 
           constraints = {}
-          constraints[:ram] = image.min_ram if image_instance.min_ram > 0
-          constraints[:disk] = image.min_disk if image_instance.min_disk > 0
+          constraints[:min_ram] = image.min_ram if image_instance.min_ram > 0
+          constraints[:min_disk] = image.min_disk if image_instance.min_disk > 0
+
+          find_by_constraints constraints
+        end
+
+        # Returns a list of Flavor that can be used with the given quota-set
+        #
+        # ==== Attributes
+        # * +quota_set+ - An OpenStack::Nova::Compute::QuotaSet instance
+        def self.applicable_for_quota_set(quota_set)
+          constraints = {}
+          constraints[:max_ram] = quota_set.ram
 
           find_by_constraints constraints
         end
