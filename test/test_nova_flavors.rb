@@ -49,6 +49,18 @@ class TestOpenStackActiveResource < Test::Unit::TestCase
       assert_not_nil flavor, "Cannot retrieve flavor"
     end
 
+    assert_nothing_raised ActiveResource::ResourceNotFound, "Cannot get flavors applicable for an image" do
+      image = OpenStack::Nova::Compute::Image.first
+      flavors = OpenStack::Nova::Compute::Flavor.applicable_for_image image
+      assert_not_empty flavors, "Cannot retrieve flavors applicable for an image"
+    end
+
+    assert_nothing_raised ActiveResource::ResourceNotFound, "Cannot get flavors applicable for quota-set" do
+      quota_set = OpenStack::Nova::Compute::QuotaSet.find TEST_CONFIG[:user_tenant_id]
+      flavors = OpenStack::Nova::Compute::Flavor.applicable_for_quota_set quota_set
+      assert_not_empty flavors, "Cannot retrieve flavors applicable for quota-set"
+    end
+
     return unless admin_test_possible?
 
     auth_admin
