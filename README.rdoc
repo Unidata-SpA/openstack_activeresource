@@ -108,7 +108,7 @@ Or in bundler Gemfile:
     # Get all the servers
     servers = OpenStack::Nova::Compute::Server.all
 
-    # To get only active server: OpenStack::Nova::Compute::Server.find :all, :params => {:status => "ACTIVE"}
+    # To get only active servers: OpenStack::Nova::Compute::Server.find :all, :params => {:status => "ACTIVE"}
 
     servers.each { |s|
       printf "Name: %s, Status: %s, Image: %s, Flavor: %s, Created: %s, Updated: %s\n",
